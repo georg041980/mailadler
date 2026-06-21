@@ -7,7 +7,10 @@ int main(int argc, char *argv[])
     QApplication app(argc, argv);
 
     QTranslator uebersetzer;
-    uebersetzer.load(":/translations/mailadler_de_DE.qm");
+    bool geladen = uebersetzer.load(":/translations/mailadler_de_DE.qm");
+    if (!geladen) {
+        qWarning() << "Deutsche Übersetzung konnte nicht geladen werden!";
+    }
     app.installTranslator(&uebersetzer);
 
     MainWindow w;

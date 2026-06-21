@@ -16,12 +16,13 @@ HEADERS += \
 FORMS += \
     mainwindow.ui
 
-TRANSLATIONS += \
-    mailadler_de_DE.ts \
-    mailadler_en_US.ts \
-    mailadler_es_ES.ts
-CONFIG += lrelease
-CONFIG += embed_translations
+RESOURCES += translations.qrc
+#TRANSLATIONS += \
+#    mailadler_de_DE.ts \
+#    mailadler_en_US.ts \
+#    mailadler_es_ES.ts
+#CONFIG += lrelease
+#CONFIG += embed_translations
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

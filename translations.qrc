@@ -1,0 +1,7 @@
+<RCC>
+    <qresource prefix="/translations">
+        <file>mailadler_de_DE.qm</file>
+        <file>mailadler_en_US.qm</file>
+        <file>mailadler_es_ES.qm</file>
+    </qresource>
+</RCC>
