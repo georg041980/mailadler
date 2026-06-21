@@ -82,3 +82,6 @@ CMakeLists.txt.user*
 .uic/
 /build*/
 /.qtcreator/
+tests/.qmake.stash
+tests/moc_predefs.h
+tests/tst_mailadler
