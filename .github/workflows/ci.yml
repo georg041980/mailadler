@@ -14,19 +14,25 @@ jobs:
       - name: Code auschecken
         uses: actions/checkout@v4
 
-      - name: Qt 6.11.1 installieren
+      - name: Qt 6.10.0 installieren (6.11.1 ist noch nicht in der Action verfügbar)
         uses: jurplel/install-qt-action@v4
         with:
-          version: '6.11.1'
+          version: '6.10.0'
           target: 'desktop'
           arch: 'gcc_64'
           modules: 'qtbase qttools'
 
       - name: Übersetzungen kompilieren (.qm erzeugen)
-        run: lrelease mailadler.pro
+        run: |
+          cd $GITHUB_WORKSPACE
+          $QT_BIN_DIR/lrelease mailadler_de_DE.ts mailadler_en_US.ts mailadler_es_ES.ts
 
       - name: Build vorbereiten (qmake)
-        run: qmake mailadler.pro
+        run: |
+          cd $GITHUB_WORKSPACE
+          $QT_BIN_DIR/qmake mailadler.pro
 
       - name: Projekt bauen (make)
-        run: make -j$(nproc)
+        run: |
+          cd $GITHUB_WORKSPACE
+          make -j$(nproc)
