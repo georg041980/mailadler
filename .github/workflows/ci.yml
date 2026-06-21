@@ -1,0 +1,32 @@
+name: Build and Test
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+
+    steps:
+      - name: Code auschecken
+        uses: actions/checkout@v4
+
+      - name: Qt 6.11.1 installieren
+        uses: jurplel/install-qt-action@v4
+        with:
+          version: '6.11.1'
+          target: 'desktop'
+          arch: 'gcc_64'
+          modules: 'qtbase qttools'
+
+      - name: Übersetzungen kompilieren (.qm erzeugen)
+        run: lrelease mailadler.pro
+
+      - name: Build vorbereiten (qmake)
+        run: qmake mailadler.pro
+
+      - name: Projekt bauen (make)
+        run: make -j$(nproc)
