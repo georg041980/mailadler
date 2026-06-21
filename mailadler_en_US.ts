@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.1" language="de_DE">
+<TS version="2.1" language="en_US">
 <context>
     <name>MainWindow</name>
     <message>
@@ -11,22 +11,22 @@
     <message>
         <location filename="mainwindow.cpp" line="10"/>
         <source>Posteingang</source>
-        <translation>Posteingang</translation>
+        <translation>Inbox</translation>
     </message>
     <message>
         <location filename="mainwindow.cpp" line="11"/>
         <source>Gesendet</source>
-        <translation>Gesendet</translation>
+        <translation>Sent</translation>
     </message>
     <message>
         <location filename="mainwindow.cpp" line="12"/>
         <source>Entwürfe</source>
-        <translation>Entwürfe</translation>
+        <translation>Drafts</translation>
     </message>
     <message>
         <location filename="mainwindow.cpp" line="13"/>
         <source>Papierkorb</source>
-        <translation>Papierkorb</translation>
+        <translation>Trash</translation>
     </message>
     <message>
         <location filename="mainwindow.cpp" line="14"/>
@@ -36,7 +36,7 @@
     <message>
         <location filename="mainwindow.cpp" line="15"/>
         <source>Archiv</source>
-        <translation>Archiv</translation>
+        <translation>Archive</translation>
     </message>
 </context>
 </TS>

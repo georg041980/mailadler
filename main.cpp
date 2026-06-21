@@ -1,23 +1,16 @@
-#include "mainwindow.h"
-
 #include <QApplication>
-#include <QLocale>
 #include <QTranslator>
+#include "mainwindow.h"
 
 int main(int argc, char *argv[])
 {
-    QApplication a(argc, argv);
+    QApplication app(argc, argv);
 
-    QTranslator translator;
-    const QStringList uiLanguages = QLocale::system().uiLanguages();
-    for (const QString &locale : uiLanguages) {
-        const QString baseName = "mailadler_" + QLocale(locale).name();
-        if (translator.load(":/i18n/" + baseName)) {
-            a.installTranslator(&translator);
-            break;
-        }
-    }
+    QTranslator uebersetzer;
+    uebersetzer.load(":/translations/mailadler_de_DE.qm");
+    app.installTranslator(&uebersetzer);
+
     MainWindow w;
     w.show();
-    return QApplication::exec();
+    return app.exec();
 }

@@ -17,7 +17,9 @@ FORMS += \
     mainwindow.ui
 
 TRANSLATIONS += \
-    mailadler_de_DE.ts
+    mailadler_de_DE.ts \
+    mailadler_en_US.ts \
+    mailadler_es_ES.ts
 CONFIG += lrelease
 CONFIG += embed_translations
 
