@@ -27,15 +27,6 @@ find_package(Qt6 REQUIRED COMPONENTS
     Quick
     Network
     Sql
-    LinguistTools
-)
-
-# Übersetzungen
-qt6_add_translation(uebersetzungen
-    TS_FILES
-        uebersetzungen/adlermail_de.ts
-        uebersetzungen/adlermail_en.ts
-        uebersetzungen/adlermail_es.ts
 )
 
 # Unterverzeichnisse
