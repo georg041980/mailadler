@@ -39,6 +39,18 @@ Rectangle {
             visible: nachrichtAnsichtModell.anzahlAnhaenge > 0
         }
 
+        // Antworten-Button
+        Button {
+            text: "Antworten"
+            visible: nachrichtAnsichtModell.hatNachricht
+            onClicked: {
+                erstellenAnsichtModell.antwortVorbereiten(
+                    nachrichtAnsichtModell.absender,
+                    nachrichtAnsichtModell.betreff,
+                    nachrichtAnsichtModell.inhalt)
+            }
+        }
+
         // Nachrichteninhalt
         Text {
             text: nachrichtAnsichtModell.istHtml

@@ -39,4 +39,10 @@ void ErstellenAnsichtModell::entwurfSpeichern() {
     emit entwurfSpeichernAngefordert();
 }
 
+void ErstellenAnsichtModell::antwortVorbereiten(const QString &an, const QString &betreff, const QString &zitat) {
+    setzeAn(an);
+    setzeBetreff("Re: " + betreff);
+    setzeInhalt("\n\n--- Original ---\n" + zitat);
+}
+
 } // namespace

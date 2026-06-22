@@ -17,6 +17,7 @@ public:
 
     Q_INVOKABLE void sendeAnfordern();
     Q_INVOKABLE void entwurfSpeichern();
+    Q_INVOKABLE void antwortVorbereiten(const QString &an, const QString &betreff, const QString &zitat);
 
     QString an() const;
     void setzeAn(const QString &an);
