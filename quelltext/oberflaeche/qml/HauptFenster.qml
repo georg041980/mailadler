@@ -106,4 +106,38 @@ ApplicationWindow {
         function onNachrichtenGeaendert() { spinner.running = false }
         function onOrdnerListeGeaendert()   { spinner.running = false }
     }
+
+    // Benachrichtigungs-Banner
+    Rectangle {
+        id: benachrichtigung
+        anchors.horizontalCenter: parent.horizontalCenter
+        y: -60
+        width: 400; height: 48; radius: 8
+        color: darkMode ? "#2d8a4e" : "#4caf50"
+        visible: false; opacity: 0
+
+        Text {
+            anchors.centerIn: parent
+            text: "📬 Neue Nachricht eingetroffen!"
+            color: "white"; font.pixelSize: 14; font.bold: true
+        }
+
+        Behavior on y { NumberAnimation { duration: 300; easing.type: Easing.OutCubic } }
+        Behavior on opacity { NumberAnimation { duration: 300 } }
+
+        function zeige() {
+            y = 10; opacity = 1; visible = true
+            zeitgeber.restart()
+        }
+
+        Timer {
+            id: zeitgeber; interval: 3000
+            onTriggered: { benachrichtigung.y = -60; benachrichtigung.opacity = 0; benachrichtigung.visible = false }
+        }
+    }
+
+    Connections {
+        target: postfachDienst
+        function onNeueNachricht() { benachrichtigung.zeige() }
+    }
 }

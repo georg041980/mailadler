@@ -42,6 +42,7 @@ public slots:
 signals:
     void nachrichtenGeaendert();
     void ordnerListeGeaendert(const QStringList& ordner);
+    void neueNachricht();
     void fehlerAufgetreten(const QString& meldung);
 
 private slots:

@@ -92,7 +92,7 @@ void PostfachDienst::beiNachrichtenHeaderFertig()
 
 void PostfachDienst::beiNeueNachricht()
 {
-    // Neue Nachricht während IDLE — Ordner neu laden
+    emit neueNachricht();
     if (!m_aktuellerOrdner.isEmpty())
         nachrichtenLaden(m_aktuellerOrdner);
     else
