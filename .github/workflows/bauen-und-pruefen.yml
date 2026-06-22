@@ -1,0 +1,32 @@
+name: Bauen und Prüfen
+
+# Läuft bei jedem Push und Pull Request auf main
+on:
+  push:
+    branches: [hauptzweig]
+  pull_request:
+    branches: [hauptzweig]
+
+jobs:
+  bauen-und-pruefen:
+    runs-on: ubuntu-24.04
+    container:
+      image: kdeorg/qt6.7-linux  # Offizielles KDE Qt6.7-Image
+
+    steps:
+      - name: Quelltext auschecken
+        uses: actions/checkout@v4
+
+      - name: Formatierung prüfen
+        run: |
+          clang-format --version
+          clang-format --dry-run --Werror $(find quelltext -name '*.h' -o -name '*.cpp')
+
+      - name: Projekt einrichten
+        run: cmake -B bau -DCMAKE_BUILD_TYPE=Debug -DBUILD_TESTING=ON
+
+      - name: Bauen
+        run: cmake --build bau --parallel $(nproc)
+
+      - name: Prüfungen ausführen
+        run: ctest --test-dir bau --output-on-failure

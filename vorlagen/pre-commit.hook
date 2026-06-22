@@ -1,0 +1,43 @@
+#!/usr/bin/env bash
+# ---------------------------------------------------------------------------
+# Git pre-commit Hook — verhindert Commits mit unförmigem oder kaputtem Code
+# ---------------------------------------------------------------------------
+# Installiert sich selbst beim nächsten "./pruefen.sh" in .git/hooks/
+# ---------------------------------------------------------------------------
+
+PROJEKT="$(git rev-parse --show-toplevel)"
+cd "$PROJEKT"
+
+echo "→ Pre-Commit-Prüfung läuft …"
+
+# 1. Formatierung
+if command -v clang-format &>/dev/null; then
+    dateien=$(git diff --cached --name-only --diff-filter=ACM | grep -E '\.(h|cpp)$' || true)
+    if [ -n "$dateien" ]; then
+        echo "$dateien" | xargs -r clang-format --dry-run --Werror 2>&1 || {
+            echo "✗ Formatierungsfehler (clang-format):"
+            echo "  clang-format -i $dateien"
+            echo "  git add $dateien && git commit"
+            exit 1
+        }
+        echo "✓ Formatierung — bestanden"
+    fi
+fi
+
+# 2. Bau & Tests (nur wenn Build-Ordner existiert und BUILD_TESTING=ON war)
+if [ -d bau ] && [ -f bau/CMakeCache.txt ]; then
+    cmake --build bau --parallel "$(nproc)" || {
+        echo "✗ Bau — FEHLGESCHLAGEN"
+        exit 1
+    }
+    echo "✓ Bau — erfolgreich"
+
+    if ctest --test-dir bau -j"$(nproc)" --output-on-failure 2>&1; then
+        echo "✓ Tests — alle bestanden"
+    else
+        echo "✗ Tests — FEHLGESCHLAGEN"
+        exit 1
+    fi
+fi
+
+echo "✓ Pre-Commit-Prüfung bestanden"

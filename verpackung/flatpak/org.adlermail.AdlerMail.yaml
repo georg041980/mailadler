@@ -1,0 +1,24 @@
+app-id: org.adlermail.AdlerMail
+runtime: org.kde.Platform
+runtime-version: '6.7'
+sdk: org.kde.Sdk
+command: adlermail
+finish-args:
+  - --share=ipc
+  - --socket=fallback-x11
+  - --socket=wayland
+  - --share=network
+  - --device=dri
+  - --filesystem=home
+cleanup:
+  - /include
+  - /lib/pkgconfig
+  - /lib/cmake
+modules:
+  - name: adlermail
+    buildsystem: cmake-ninja
+    config-opts:
+      - -DCMAKE_BUILD_TYPE=Release
+    sources:
+      - type: dir
+        path: ../..

@@ -1,0 +1,28 @@
+# Valgrind-Unterdrückungen für Qt6-Fehlalarme
+# Qt allokiert manche Dinge absichtlich einmal und gibt sie nie frei
+# (z.B. QFontDatabase, einmalige String-Literale).
+# Das sind KEINE echten Lecks — wir unterdrücken sie.
+
+{
+   Qt6_QFontDatabase_once
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:_ZN18*QFontDatabase*
+   ...
+}
+
+{
+   Qt6_global_statics
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:_ZN20*QGlobalStatic*
+   ...
+}
+
+{
+   Qt6_QML_engine_once
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:_ZN15*QQmlEngine*
+   ...
+}

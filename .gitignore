@@ -1,0 +1,28 @@
+# Build
+bau/
+build/
+
+# Qt
+*.pro.user
+moc_*
+qrc_*
+ui_*
+*.moc
+
+# IDE
+.idea/
+.vscode/
+*.user
+*.swp
+*.swo
+*~
+
+# Übersetzungen (kompiliert)
+*.qm
+
+# System-Dateien
+.DS_Store
+Thumbs.db
+
+# CPack / Paketierung
+_CPack_Packages/

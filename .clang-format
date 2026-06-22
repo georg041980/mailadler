@@ -1,0 +1,51 @@
+# AdlerMail — clang-format Konfiguration
+# Allman-Stil, 4 Leerzeichen, 120 Zeichen Breite.
+# Verbindlich für alle Quelldateien.
+---
+BasedOnStyle: LLVM
+Language: Cpp
+Standard: c++17
+
+# Einrückung
+IndentWidth: 4
+TabWidth: 4
+UseTab: Never
+AccessModifierOffset: -4
+IndentCaseLabels: false
+
+# Zeilenlänge und Umbrüche
+ColumnLimit: 120
+BreakBeforeBraces: Allman
+BreakConstructorInitializers: BeforeComma
+ConstructorInitializerAllOnOneLineOrOnePerLine: true
+AllowShortFunctionsOnASingleLine: InlineOnly
+AllowShortIfStatementsOnASingleLine: Never
+AllowShortLoopsOnASingleLine: false
+
+# Leerzeichen
+PointerAlignment: Left
+SpaceAfterCStyleCast: true
+SpaceBeforeCpp11BracedList: true
+SpaceBeforeParens: ControlStatements
+
+# Include-Sortierung
+SortIncludes: true
+IncludeBlocks: Regroup
+IncludeCategories:
+  # Qt-Includes zuerst
+  - Regex: '^<Qt.*>$'
+    Priority: 1
+  # Andere System-Includes
+  - Regex: '^<.*>$'
+    Priority: 2
+  # Projekt-Includes
+  - Regex: '.*'
+    Priority: 3
+
+# Leerzeilen
+MaxEmptyLinesToKeep: 1
+SeparateDefinitionBlocks: Always
+
+# Makros und Kommentare
+AlignTrailingComments: true
+ReflowComments: false
