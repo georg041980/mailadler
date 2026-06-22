@@ -62,6 +62,7 @@ private:
         Keiner,
         Verbinden,
         Ehlo,
+        StartTls,
         AuthAnmelden,
         AuthPasswort,
         MailFrom,

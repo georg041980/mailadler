@@ -119,9 +119,23 @@ void SmtpVerbindung::verarbeiteAntwortZeile(const QByteArray &zeile)
         break;
 
     case Phase::Ehlo:
-        // EHLO bestätigt → AUTH LOGIN
+        // EHLO bestätigt — STARTTLS wenn Port 587, sonst direkt AUTH
+        if (m_port == 587 && m_tls) {
+            m_phase = Phase::StartTls;
+            sendeBefehl("STARTTLS");
+        } else {
+            m_phase = Phase::AuthAnmelden;
+            sendeBefehl("AUTH LOGIN");
+        }
+        break;
+
+    case Phase::StartTls:
+        // STARTTLS bestätigt — TLS-Upgrade
         m_phase = Phase::AuthAnmelden;
-        sendeBefehl("AUTH LOGIN");
+        connect(m_verbindung, &QSslSocket::encrypted, this, [this]() {
+            sendeBefehl("AUTH LOGIN");
+        }, Qt::SingleShotConnection);
+        m_verbindung->startClientEncryption();
         break;
 
     case Phase::AuthAnmelden:
