@@ -37,6 +37,9 @@ public slots:
     /// FETCH von:bis (FLAGS BODY.PEEK[HEADER.FIELDS (FROM SUBJECT DATE)])
     void nachrichtenHeaderAbrufen(int von, int bis);
 
+    /// FETCH uid BODY[TEXT] — lädt den Text-Inhalt einer Nachricht.
+    void nachrichtInhaltAbrufen(int uid);
+
 signals:
     void verbunden();
     void getrennt();
@@ -45,6 +48,7 @@ signals:
     void ordnerAusgewaehlt(int nachrichtenZaehler);
     void nachrichtHeaderEmpfangen(const Kern::Nachricht &nachricht);
     void nachrichtenHeaderFertig();
+    void nachrichtInhaltEmpfangen(int uid, const QString &inhalt);
     void fehlerAufgetreten(const QString &meldung);
 
 private slots:
@@ -87,6 +91,7 @@ private:
         OrdnerListe,
         OrdnerAuswaehlen,
         NachrichtenHeader,
+        NachrichtenInhalt,
         Logout
     };
     Befehl m_aktuellerBefehl = Befehl::Keiner;

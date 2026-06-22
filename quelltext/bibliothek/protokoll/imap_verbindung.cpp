@@ -158,6 +158,17 @@ void ImapVerbindung::nachrichtenHeaderAbrufen(int von, int bis)
     sendeBefehl("FETCH " + bereich + " (FLAGS BODY.PEEK[HEADER.FIELDS (FROM SUBJECT DATE)])");
 }
 
+void ImapVerbindung::nachrichtInhaltAbrufen(int uid)
+{
+    if (!m_angemeldet) {
+        emit fehlerAufgetreten("Nicht angemeldet");
+        return;
+    }
+    m_aktuellerBefehl = Befehl::NachrichtenInhalt;
+    m_fetchPuffer.clear();
+    sendeBefehl("FETCH " + QByteArray::number(uid) + " BODY[TEXT]");
+}
+
 // ---------------------------------------------------------------------------
 // IMAP-Protokoll-Helfer
 // ---------------------------------------------------------------------------
@@ -308,6 +319,10 @@ void ImapVerbindung::verarbeiteStatusZeile(const QByteArray &zeile)
 
     case Befehl::NachrichtenHeader:
         emit nachrichtenHeaderFertig();
+        break;
+
+    case Befehl::NachrichtenInhalt:
+        // Inhalt wurde über fetchPuffer gesammelt und bereits emittiert
         break;
 
     case Befehl::Logout:
