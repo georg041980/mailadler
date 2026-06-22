@@ -10,6 +10,7 @@
 #include "ansichtmodelle/nachrichten_liste_modell.h"
 #include "ansichtmodelle/erstellen_ansicht_modell.h"
 #include "ansichtmodelle/ordner_liste_modell.h"
+#include "ansichtmodelle/nachricht_ansicht_modell.h"
 #include "kern/nachricht.h"
 #include "dienst/postfach_dienst.h"
 #include "speicher/zwischenspeicher.h"
@@ -17,6 +18,7 @@
 using AdlerMail::NachrichtenListeModell;
 using AdlerMail::ErstellenAnsichtModell;
 using AdlerMail::OrdnerListeModell;
+using AdlerMail::NachrichtAnsichtModell;
 using AdlerMail::Kern::Nachricht;
 using AdlerMail::Dienst::PostfachDienst;
 using AdlerMail::Speicher::Zwischenspeicher;
@@ -54,6 +56,9 @@ int main(int anzahlArgumente, char *argumente[])
     auto *ordnerModell = new OrdnerListeModell(&anwendung);
     ordnerModell->setzeOrdner({"INBOX", "Gesendet", "Entwürfe", "Papierkorb"});
 
+    auto *nachrichtAnsichtModell = new NachrichtAnsichtModell(&anwendung);
+    nachrichtAnsichtModell->setzeNachricht(testDaten[0]);
+
     // --- Dienste ---
 
     auto *cache = new Zwischenspeicher(&anwendung);
@@ -68,6 +73,7 @@ int main(int anzahlArgumente, char *argumente[])
     maschine.rootContext()->setContextProperty("nachrichtenListeModell", nachrichtenModell);
     maschine.rootContext()->setContextProperty("erstellenAnsichtModell", erstellenModell);
     maschine.rootContext()->setContextProperty("ordnerListeModell", ordnerModell);
+    maschine.rootContext()->setContextProperty("nachrichtAnsichtModell", nachrichtAnsichtModell);
     maschine.load(QUrl("qrc:/AdlerMail/HauptFenster.qml"));
 
     if (maschine.rootObjects().isEmpty()) {

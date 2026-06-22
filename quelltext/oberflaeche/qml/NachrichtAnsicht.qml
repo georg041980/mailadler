@@ -12,12 +12,17 @@ Rectangle {
         spacing: 8
 
         Text {
-            text: "Betreff: Beispielbetreff"
+            text: nachrichtAnsichtModell.hatNachricht
+                  ? "Betreff: " + nachrichtAnsichtModell.betreff
+                  : ""
             font.pixelSize: 18
             font.bold: true
         }
         Text {
-            text: "Von: max@beispiel.de"
+            text: nachrichtAnsichtModell.hatNachricht
+                  ? "Von: " + nachrichtAnsichtModell.absender
+                    + "  —  " + nachrichtAnsichtModell.datum
+                  : ""
             font.pixelSize: 13
             color: "#555555"
         }
@@ -25,7 +30,7 @@ Rectangle {
         Rectangle { Layout.preferredHeight: 1; Layout.fillWidth: true; color: "#ddd" }
 
         Text {
-            text: "Nachrichteninhalt erscheint hier..."
+            text: nachrichtAnsichtModell.inhalt
             Layout.fillWidth: true
             Layout.fillHeight: true
             font.pixelSize: 14

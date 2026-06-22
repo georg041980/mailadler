@@ -31,4 +31,9 @@ void NachrichtenListeModell::setzeNachrichten(const QVector<Kern::Nachricht> &n)
     endResetModel();
 }
 
+Kern::Nachricht NachrichtenListeModell::nachrichtBei(int index) const {
+    if (index < 0 || index >= m_nachrichten.size()) return {};
+    return m_nachrichten.at(index);
+}
+
 } // namespace

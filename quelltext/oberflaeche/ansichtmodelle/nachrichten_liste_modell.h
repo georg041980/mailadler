@@ -17,6 +17,7 @@ public:
     QHash<int, QByteArray> roleNames() const override;
 
     void setzeNachrichten(const QVector<Kern::Nachricht> &nachrichten);
+    Q_INVOKABLE Kern::Nachricht nachrichtBei(int index) const;
 
 private:
     QVector<Kern::Nachricht> m_nachrichten;

@@ -37,5 +37,13 @@ ListView {
                 color: "#888888"
             }
         }
+
+        MouseArea {
+            anchors.fill: parent
+            onClicked: {
+                var msg = nachrichtenListeModell.nachrichtBei(index);
+                nachrichtAnsichtModell.setzeNachricht(msg);
+            }
+        }
     }
 }
