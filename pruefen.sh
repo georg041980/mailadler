@@ -95,6 +95,7 @@ testen() {
     meldung "Tests ausführen …"
     if ctest --test-dir "$BAU" --output-on-failure -j"$(nproc)" 2>&1; then
         erfolg "Tests — alle bestanden"
+        "$PROJEKT/agent_update.sh" 2>/dev/null || true
     else
         fehler "Tests — FEHLGESCHLAGEN"
         return 1

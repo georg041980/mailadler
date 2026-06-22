@@ -83,19 +83,19 @@ Fehlermeldungen zeigen exakte Datei und Zeile.
 
 ## Aktueller Stand
 
-✅ Projektgerüst vollständig (CMake+Ninja, Sanitizer, clang-format).
-✅ Datenbank: Konto-CRUD + Nachrichten-Tabelle (10 Tests).
-✅ Zwischenspeicher mit setzeEinzeln().
-✅ IMAP: LOGIN, LIST, SELECT+EXISTS, FETCH-Header (mehrzeilig), BODY-API.
-✅ SMTP: EHLO, AUTH, MAIL FROM, RCPT TO, DATA mit echten Parametern.
-✅ QML-Fenster: NachrichtenListe, NachrichtAnsicht, ErstellenAnsicht verdrahtet.
-✅ ViewModels: NachrichtenListeModell, ErstellenAnsichtModell, OrdnerListeModell, NachrichtAnsichtModell.
-✅ Dienste: KontoDienst, PostfachDienst (ordnerLaden, nachrichtenLaden).
-✅ 6 Test-Suiten, alle grün (≈0,2 s).
-✅ CI: GitHub Actions auf ubuntu-24.04 mit Sanitizern.
-✅ Keine Übersetzungsdateien — fest Deutsch.
+<!-- AUTO-START -->
+- **Version:** 1.0.0
+- **Tests:** 6 Test-Suiten, 35 Testfälle, alle grün
+- **Build:** CMake+Ninja, Sanitizer (ASan+UBSan) aktiv
+- **Modul-Status:**
+  - ⚠ kern/  (keine Tests)
+  - ⚠ speicher/  (keine Tests)
+  - ⚠ dienst/  (keine Tests)
+  - ⚠ protokoll/  (keine Tests)
+  - ⬜ oberflaeche/ (4 QML)
+<!-- AUTO-ENDE -->
 
-⚠ Qt 6.4.2 (System-Paket). `loadFromModule` erst ab Qt 6.5.
+⚠ Qt 6.4.2 (System-Paket). Qt-Schlüsselwörter (`signals`, `slots`) englisch — MOC erkennt keine Aliase. Alles andere deutsch.
 
 ## Was als Nächstes
 

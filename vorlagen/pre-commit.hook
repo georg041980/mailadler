@@ -34,6 +34,7 @@ if [ -d bau ] && [ -f bau/CMakeCache.txt ]; then
 
     if ctest --test-dir bau -j"$(nproc)" --output-on-failure 2>&1; then
         echo "✓ Tests — alle bestanden"
+        ./agent_update.sh 2>/dev/null || true
     else
         echo "✗ Tests — FEHLGESCHLAGEN"
         exit 1
