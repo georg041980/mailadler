@@ -14,11 +14,21 @@ Rectangle {
 
         RowLayout {
             Text { text: "An:"; Layout.preferredWidth: 60 }
-            TextField { Layout.fillWidth: true; placeholderText: "empfaenger@beispiel.de" }
+            TextField {
+                Layout.fillWidth: true
+                placeholderText: "empfaenger@beispiel.de"
+                text: erstellenAnsichtModell.an
+                onTextChanged: erstellenAnsichtModell.an = text
+            }
         }
         RowLayout {
             Text { text: "Betreff:"; Layout.preferredWidth: 60 }
-            TextField { Layout.fillWidth: true; placeholderText: "Betreff" }
+            TextField {
+                Layout.fillWidth: true
+                placeholderText: "Betreff"
+                text: erstellenAnsichtModell.betreff
+                onTextChanged: erstellenAnsichtModell.betreff = text
+            }
         }
 
         Rectangle { Layout.preferredHeight: 1; Layout.fillWidth: true; color: "#ddd" }
@@ -29,11 +39,14 @@ Rectangle {
             TextArea {
                 placeholderText: "Nachrichtentext..."
                 wrapMode: TextEdit.WordWrap
+                text: erstellenAnsichtModell.inhalt
+                onTextChanged: erstellenAnsichtModell.inhalt = text
             }
         }
 
         Button {
             text: "Senden"
+            enabled: erstellenAnsichtModell.kannSenden
             Layout.alignment: Qt.AlignRight
         }
     }

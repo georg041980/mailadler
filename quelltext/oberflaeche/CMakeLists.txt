@@ -6,6 +6,8 @@ target_sources(adlermail_oberflaeche PRIVATE
     ansichtmodelle/erstellen_ansicht_modell.cpp
     ansichtmodelle/nachrichten_liste_modell.h
     ansichtmodelle/nachrichten_liste_modell.cpp
+    ansichtmodelle/ordner_liste_modell.h
+    ansichtmodelle/ordner_liste_modell.cpp
 )
 
 # QML-Dateien als Ressourcen einbetten

@@ -21,9 +21,9 @@ ApplicationWindow {
             ListView {
                 anchors.fill: parent
                 anchors.margins: 4
-                model: ["INBOX", "Gesendet", "Entwürfe", "Papierkorb"]
+                model: ordnerListeModell
                 delegate: Text {
-                    text: modelData
+                    text: model.display
                     font.pixelSize: 14
                     padding: 8
                 }

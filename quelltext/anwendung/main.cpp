@@ -8,10 +8,12 @@
 
 #include "ansichtmodelle/nachrichten_liste_modell.h"
 #include "ansichtmodelle/erstellen_ansicht_modell.h"
+#include "ansichtmodelle/ordner_liste_modell.h"
 #include "kern/nachricht.h"
 
 using AdlerMail::NachrichtenListeModell;
 using AdlerMail::ErstellenAnsichtModell;
+using AdlerMail::OrdnerListeModell;
 using AdlerMail::Kern::Nachricht;
 
 int main(int anzahlArgumente, char *argumente[])
@@ -44,11 +46,15 @@ int main(int anzahlArgumente, char *argumente[])
 
     auto *erstellenModell = new ErstellenAnsichtModell(&anwendung);
 
+    auto *ordnerModell = new OrdnerListeModell(&anwendung);
+    ordnerModell->setzeOrdner({"INBOX", "Gesendet", "Entwürfe", "Papierkorb"});
+
     // --- QML starten ---
 
     QQmlApplicationEngine maschine;
     maschine.rootContext()->setContextProperty("nachrichtenListeModell", nachrichtenModell);
     maschine.rootContext()->setContextProperty("erstellenAnsichtModell", erstellenModell);
+    maschine.rootContext()->setContextProperty("ordnerListeModell", ordnerModell);
     maschine.load(QUrl("qrc:/AdlerMail/HauptFenster.qml"));
 
     if (maschine.rootObjects().isEmpty()) {
