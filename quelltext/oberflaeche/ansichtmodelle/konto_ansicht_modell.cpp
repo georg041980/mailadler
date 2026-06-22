@@ -42,6 +42,22 @@ void KontoAnsichtModell::speichern() {
     if (m_kannSpeichern) emit speichernAngefordert(konto());
 }
 
+void KontoAnsichtModell::loeschenAnfordern() {
+    if (m_kontoId > 0) emit loeschenAngefordert(m_kontoId);
+}
+
+void KontoAnsichtModell::ladeKonto(const Kern::Konto &k) {
+    m_kontoId = k.id;
+    setzeEmail(k.email);
+    setzeName(k.name);
+    setzeImapServer(k.imapServer);
+    setzeImapPort(k.imapPort);
+    setzeSmtpServer(k.smtpServer);
+    setzeSmtpPort(k.smtpPort);
+    setzeBenutzer(k.benutzer);
+    setzePasswort(k.passwort);
+}
+
 Kern::Konto KontoAnsichtModell::konto() const {
     Kern::Konto k;
     k.email      = m_email;

@@ -96,6 +96,11 @@ int main(int anzahlArgumente, char *argumente[])
             k.imapServer, k.imapPort, k.smtpServer, k.smtpPort, k.benutzer, k.passwort);
     });
 
+    QObject::connect(kontoAnsichtModell, &KontoAnsichtModell::loeschenAngefordert,
+            kontoDienst, [kontoDienst](qint64 id) {
+        kontoDienst->kontoLoeschen(id);
+    });
+
     // SMTP
     auto *smtp = new SmtpVerbindung(&anwendung);
     QObject::connect(erstellenModell, &ErstellenAnsichtModell::sendeAngefordert,
