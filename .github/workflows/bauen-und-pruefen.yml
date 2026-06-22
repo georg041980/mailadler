@@ -1,6 +1,5 @@
 name: Bauen und Prüfen
 
-# Läuft bei jedem Push und Pull Request auf main
 on:
   push:
     branches: [hauptzweig]
@@ -10,20 +9,30 @@ on:
 jobs:
   bauen-und-pruefen:
     runs-on: ubuntu-24.04
-    container:
-      image: kdeorg/qt6.7-linux  # Offizielles KDE Qt6.7-Image
 
     steps:
       - name: Quelltext auschecken
         uses: actions/checkout@v4
 
+      - name: Abhängigkeiten installieren
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq \
+            ninja-build \
+            clang-format \
+            qt6-base-dev \
+            qt6-declarative-dev \
+            qt6-tools-dev \
+            qt6-tools-dev-tools \
+            libgl1-mesa-dev
+
       - name: Formatierung prüfen
         run: |
           clang-format --version
-          clang-format --dry-run --Werror $(find quelltext -name '*.h' -o -name '*.cpp')
+          clang-format --dry-run --Werror $(find quelltext pruefungen -name '*.h' -o -name '*.cpp')
 
-      - name: Projekt einrichten
-        run: cmake -B bau -DCMAKE_BUILD_TYPE=Debug -DBUILD_TESTING=ON
+      - name: Projekt einrichten (mit Sanitizern)
+        run: cmake -B bau -GNinja -DCMAKE_BUILD_TYPE=Debug -DBUILD_TESTING=ON -DSICHERER_BAU=ON
 
       - name: Bauen
         run: cmake --build bau --parallel $(nproc)
