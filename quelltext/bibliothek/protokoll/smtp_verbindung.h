@@ -56,6 +56,7 @@ private:
     quint16     m_port        = 587;
     bool        m_tls         = true;
     QByteArray  m_puffer;
+    QString     m_absender, m_empfaenger, m_betreff, m_inhalt;
 
     enum class Phase {
         Keiner,

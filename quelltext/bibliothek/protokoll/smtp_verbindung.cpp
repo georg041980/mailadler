@@ -59,10 +59,11 @@ void SmtpVerbindung::verbinden()
 void SmtpVerbindung::sende(const QString &absender, const QStringList &empfaenger,
                             const QString &betreff, const QString &inhalt)
 {
-    Q_UNUSED(absender)
-    Q_UNUSED(empfaenger)
-    Q_UNUSED(betreff)
-    Q_UNUSED(inhalt)
+    m_absender   = absender;
+    m_empfaenger = empfaenger.isEmpty() ? QString() : empfaenger[0];
+    m_betreff    = betreff;
+    m_inhalt     = inhalt;
+
     if (!istVerbunden()) {
         emit fehlerAufgetreten("Nicht verbunden");
         return;
@@ -130,12 +131,12 @@ void SmtpVerbindung::verarbeiteAntwortZeile(const QByteArray &zeile)
 
     case Phase::AuthPasswort:
         m_phase = Phase::MailFrom;
-        sendeBefehl("MAIL FROM:<test@adlermail.de>");
+        sendeBefehl("MAIL FROM:<" + m_absender.toUtf8() + ">");
         break;
 
     case Phase::MailFrom:
         m_phase = Phase::RcptTo;
-        sendeBefehl("RCPT TO:<test@adlermail.de>");
+        sendeBefehl("RCPT TO:<" + m_empfaenger.toUtf8() + ">");
         break;
 
     case Phase::RcptTo:
@@ -146,7 +147,12 @@ void SmtpVerbindung::verarbeiteAntwortZeile(const QByteArray &zeile)
     case Phase::Daten:
         // Server bereit für Inhalt → Nachricht senden
         m_phase = Phase::InhaltSenden;
-        m_verbindung->write("Subject: Test\r\n\r\nHello World\r\n.\r\n");
+        m_verbindung->write(
+            "Subject: " + m_betreff.toUtf8() + "\r\n" +
+            "From: " + m_absender.toUtf8() + "\r\n" +
+            "To: " + m_empfaenger.toUtf8() + "\r\n" +
+            "\r\n" +
+            m_inhalt.toUtf8() + "\r\n.\r\n");
         break;
 
     case Phase::InhaltSenden:
