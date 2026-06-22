@@ -1,5 +1,7 @@
 #include "datenbank.h"
 #include "kern/konto.h"
+#include "kern/nachricht.h"
+#include <QtCore/QDateTime>
 #include <QtSql/QSqlQuery>
 #include <QtSql/QSqlError>
 
@@ -94,6 +96,75 @@ bool Datenbank::kontoLoeschen(qint64 id) {
 }
 
 // ---------------------------------------------------------------------------
+// Nachrichten-Verwaltung
+// ---------------------------------------------------------------------------
+
+qint64 Datenbank::nachrichtSpeichern(const Kern::Nachricht &n)
+{
+    QSqlQuery query(m_db);
+    query.prepare("INSERT OR REPLACE INTO nachrichten "
+                  "(id, ordner, uid, absender, betreff, inhalt, inhalt_html, datum, gelesen, hat_anhaenge) "
+                  "VALUES (:id, :ordner, :uid, :absender, :betreff, :inhalt, :html, :datum, :gelesen, :anhaenge)");
+    query.bindValue(":id", n.id > 0 ? n.id : QVariant());
+    query.bindValue(":ordner", "INBOX");
+    query.bindValue(":uid", n.id);
+    query.bindValue(":absender", n.absender);
+    query.bindValue(":betreff", n.betreff);
+    query.bindValue(":inhalt", n.inhalt);
+    query.bindValue(":html", n.inhaltHtml);
+    query.bindValue(":datum", n.datum.toString(Qt::ISODate));
+    query.bindValue(":gelesen", n.gelesen ? 1 : 0);
+    query.bindValue(":anhaenge", n.hatAnhaenge ? 1 : 0);
+
+    if (!query.exec()) {
+        emit fehlerAufgetreten(query.lastError().text());
+        return -1;
+    }
+    return query.lastInsertId().toLongLong();
+}
+
+QVector<Kern::Nachricht> Datenbank::nachrichtenFuerOrdner(const QString &ordner) const
+{
+    QVector<Kern::Nachricht> ergebnis;
+    QSqlQuery query(m_db);
+    query.prepare("SELECT id, ordner, uid, absender, betreff, inhalt, inhalt_html, "
+                  "datum, gelesen, hat_anhaenge FROM nachrichten WHERE ordner = :ordner "
+                  "ORDER BY datum DESC");
+    query.bindValue(":ordner", ordner);
+    query.exec();
+
+    while (query.next()) {
+        Kern::Nachricht n;
+        n.id          = query.value(0).toLongLong();
+        n.absender    = query.value(3).toString();
+        n.betreff     = query.value(4).toString();
+        n.inhalt      = query.value(5).toString();
+        n.inhaltHtml  = query.value(6).toString();
+        n.datum       = QDateTime::fromString(query.value(7).toString(), Qt::ISODate);
+        n.gelesen     = query.value(8).toBool();
+        n.hatAnhaenge = query.value(9).toBool();
+        ergebnis.append(n);
+    }
+    return ergebnis;
+}
+
+bool Datenbank::nachrichtAlsGelesenMarkieren(qint64 id)
+{
+    QSqlQuery query(m_db);
+    query.prepare("UPDATE nachrichten SET gelesen = 1 WHERE id = :id");
+    query.bindValue(":id", id);
+    return query.exec() && query.numRowsAffected() > 0;
+}
+
+void Datenbank::nachrichtenLoeschenFuerOrdner(const QString &ordner)
+{
+    QSqlQuery query(m_db);
+    query.prepare("DELETE FROM nachrichten WHERE ordner = :ordner");
+    query.bindValue(":ordner", ordner);
+    query.exec();
+}
+
+// ---------------------------------------------------------------------------
 void Datenbank::erzeugeTabellen() {
     QSqlQuery query(m_db);
     query.exec("CREATE TABLE IF NOT EXISTS konten ("
@@ -104,6 +175,16 @@ void Datenbank::erzeugeTabellen() {
                "smtp_server TEXT, smtp_port INTEGER,"
                "benutzer TEXT, passwort TEXT,"
                "aktiv INTEGER DEFAULT 1)");
+
+    query.exec("CREATE TABLE IF NOT EXISTS nachrichten ("
+               "id INTEGER PRIMARY KEY AUTOINCREMENT,"
+               "ordner TEXT NOT NULL DEFAULT 'INBOX',"
+               "uid INTEGER,"
+               "absender TEXT, betreff TEXT,"
+               "inhalt TEXT, inhalt_html TEXT,"
+               "datum TEXT,"
+               "gelesen INTEGER DEFAULT 0,"
+               "hat_anhaenge INTEGER DEFAULT 0)");
 }
 
 }} // namespace

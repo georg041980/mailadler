@@ -1,5 +1,6 @@
 #pragma once
 #include "../kern/konto.h"
+#include "../kern/nachricht.h"
 #include <QtCore/QObject>
 #include <QtCore/QVector>
 #include <QtSql/QSqlDatabase>
@@ -23,6 +24,12 @@ public:
     qint64 kontoSpeichern(const Kern::Konto &konto);
     QVector<Kern::Konto> alleKonten() const;
     bool kontoLoeschen(qint64 id);
+
+    // Nachrichten-Verwaltung
+    qint64 nachrichtSpeichern(const Kern::Nachricht &nachricht);
+    QVector<Kern::Nachricht> nachrichtenFuerOrdner(const QString &ordner) const;
+    bool nachrichtAlsGelesenMarkieren(qint64 id);
+    void nachrichtenLoeschenFuerOrdner(const QString &ordner);
 
 signals:
     void fehlerAufgetreten(const QString &meldung);

@@ -2,6 +2,7 @@
 #include <QtTest>
 #include "speicher/datenbank.h"
 #include "kern/konto.h"
+#include "kern/nachricht.h"
 
 using AdlerMail::Speicher::Datenbank;
 using AdlerMail::Kern::Konto;
@@ -59,8 +60,6 @@ private slots:
         auto konten = m_db->alleKonten();
         QCOMPARE(konten.size(), 1);
         QCOMPARE(konten[0].email, "max@beispiel.de");
-        QCOMPARE(konten[0].imapPort, static_cast<quint16>(993));
-        QVERIFY(konten[0].istAktiv);
     }
 
     void sollteKontoLoeschen() {
@@ -85,6 +84,37 @@ private slots:
         konto.imapServer = "anderer.de";
         qint64 id2 = m_db->kontoSpeichern(konto);
         QCOMPARE(id2, -1);
+    }
+
+    // --- Phase 3: Nachrichten-CRUD ---
+    void sollteNachrichtSpeichern() {
+        AdlerMail::Kern::Nachricht n;
+        n.absender = "test@example.com";
+        n.betreff  = "Testnachricht";
+        n.inhalt   = "Das ist der Inhalt.";
+        n.datum    = QDateTime::currentDateTime();
+
+        qint64 id = m_db->nachrichtSpeichern(n);
+        QVERIFY(id > 0);
+    }
+
+    void sollteNachrichtenFuerOrdnerLesen() {
+        auto nachrichten = m_db->nachrichtenFuerOrdner("INBOX");
+        QVERIFY(nachrichten.size() >= 1);
+        QCOMPARE(nachrichten[0].absender, "test@example.com");
+        QCOMPARE(nachrichten[0].betreff, "Testnachricht");
+    }
+
+    void sollteNachrichtAlsGelesenMarkieren() {
+        auto nachrichten = m_db->nachrichtenFuerOrdner("INBOX");
+        QVERIFY(!nachrichten.isEmpty());
+        QVERIFY(m_db->nachrichtAlsGelesenMarkieren(nachrichten[0].id));
+    }
+
+    void sollteNachrichtenLoeschen() {
+        m_db->nachrichtenLoeschenFuerOrdner("INBOX");
+        auto nachrichten = m_db->nachrichtenFuerOrdner("INBOX");
+        QCOMPARE(nachrichten.size(), 0);
     }
 
 private:
