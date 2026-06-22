@@ -1,5 +1,6 @@
 // AdlerMail — Einstiegspunkt
 #include <QtCore/QDateTime>
+#include <QtCore/QObject>
 #include <QtCore/QUrl>
 #include <QtCore/QVector>
 #include <QtGui/QGuiApplication>
@@ -10,11 +11,15 @@
 #include "ansichtmodelle/erstellen_ansicht_modell.h"
 #include "ansichtmodelle/ordner_liste_modell.h"
 #include "kern/nachricht.h"
+#include "dienst/postfach_dienst.h"
+#include "speicher/zwischenspeicher.h"
 
 using AdlerMail::NachrichtenListeModell;
 using AdlerMail::ErstellenAnsichtModell;
 using AdlerMail::OrdnerListeModell;
 using AdlerMail::Kern::Nachricht;
+using AdlerMail::Dienst::PostfachDienst;
+using AdlerMail::Speicher::Zwischenspeicher;
 
 int main(int anzahlArgumente, char *argumente[])
 {
@@ -48,6 +53,14 @@ int main(int anzahlArgumente, char *argumente[])
 
     auto *ordnerModell = new OrdnerListeModell(&anwendung);
     ordnerModell->setzeOrdner({"INBOX", "Gesendet", "Entwürfe", "Papierkorb"});
+
+    // --- Dienste ---
+
+    auto *cache = new Zwischenspeicher(&anwendung);
+    auto *postfachDienst = new PostfachDienst(cache, &anwendung);
+
+    QObject::connect(postfachDienst, &PostfachDienst::ordnerListeGeaendert,
+            ordnerModell, &OrdnerListeModell::setzeOrdner);
 
     // --- QML starten ---
 
