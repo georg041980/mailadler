@@ -21,6 +21,7 @@ struct Konto
     quint16 smtpPort = 587;
     QString benutzer;
     QString passwort;
+    QString signatur;
     bool istAktiv = true;
 };
 

@@ -74,9 +74,8 @@ qint64 Datenbank::kontoSpeichern(const Kern::Konto& konto)
 {
     QSqlQuery query(m_db);
     query.prepare("INSERT INTO konten (email, name, imap_server, imap_port, "
-                  "smtp_server, smtp_port, benutzer, passwort, aktiv) "
-                  "VALUES (:email, :name, :imap, :imapp, :smtp, :smtpp, "
-                  ":benutzer, :passwort, :aktiv)");
+                  "smtp_server, smtp_port, benutzer, passwort, signatur, aktiv) "
+                  "VALUES (:email, :name, :imap, :imapp, :smtp, :smtpp, :benutzer, :passwort, :signatur, :aktiv)");
     query.bindValue(":email", konto.email);
     query.bindValue(":name", konto.name);
     query.bindValue(":imap", konto.imapServer);
@@ -85,6 +84,7 @@ qint64 Datenbank::kontoSpeichern(const Kern::Konto& konto)
     query.bindValue(":smtpp", konto.smtpPort);
     query.bindValue(":benutzer", konto.benutzer);
     query.bindValue(":passwort", verschluessele(konto.passwort));
+    query.bindValue(":signatur", konto.signatur);
     query.bindValue(":aktiv", konto.istAktiv ? 1 : 0);
 
     if (!query.exec())
@@ -104,7 +104,7 @@ QVector<Kern::Konto> Datenbank::alleKonten() const
     QVector<Kern::Konto> konten;
     QSqlQuery query(m_db);
     query.exec("SELECT id, email, name, imap_server, imap_port, "
-               "smtp_server, smtp_port, benutzer, passwort, aktiv "
+               "smtp_server, smtp_port, benutzer, passwort, signatur, aktiv "
                "FROM konten ORDER BY id");
 
     while (query.next())
@@ -119,7 +119,8 @@ QVector<Kern::Konto> Datenbank::alleKonten() const
         k.smtpPort = query.value(6).toUInt();
         k.benutzer = query.value(7).toString();
         k.passwort = entschluessele(query.value(8).toString());
-        k.istAktiv = query.value(9).toBool();
+        k.signatur = query.value(9).toString();
+        k.istAktiv = query.value(10).toBool();
         konten.append(k);
     }
     return konten;
@@ -244,7 +245,7 @@ void Datenbank::erzeugeTabellen()
                "name TEXT,"
                "imap_server TEXT, imap_port INTEGER,"
                "smtp_server TEXT, smtp_port INTEGER,"
-               "benutzer TEXT, passwort TEXT,"
+               "benutzer TEXT, passwort TEXT, signatur TEXT,"
                "aktiv INTEGER DEFAULT 1)");
 
     query.exec("CREATE TABLE IF NOT EXISTS nachrichten ("
