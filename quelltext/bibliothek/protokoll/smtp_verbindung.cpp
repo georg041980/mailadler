@@ -194,9 +194,10 @@ void SmtpVerbindung::beiSocketFehler(QAbstractSocket::SocketError fehler)
 
 void SmtpVerbindung::beiSslFehlern(const QList<QSslError> &fehler)
 {
-    m_verbindung->ignoreSslErrors();
+    if (!m_tls) return;
     for (const auto &f : fehler)
-        qWarning() << "[SMTP] SSL-Fehler ignoriert:" << f.errorString();
+        qWarning() << "[SMTP] SSL-Fehler:" << f.errorString();
+    emit fehlerAufgetreten("SSL/TLS-Fehler bei SMTP-Verbindung");
 }
 
 }} // namespace

@@ -432,13 +432,12 @@ void ImapVerbindung::beiSocketFehler(QAbstractSocket::SocketError fehler)
 
 void ImapVerbindung::beiSslFehlern(const QList<QSslError> &fehler)
 {
-    // Akzeptiere alle Zertifikatsfehler für Entwicklungszwecke.
-    // TODO: In Produktion durch korrekte Prüfung ersetzen.
-    m_verbindung->ignoreSslErrors();
-
+    // Bei Tests (Plain-TCP) ignorieren, sonst Fehler melden
+    if (!m_tls) return;
     for (const auto &f : fehler) {
-        qWarning() << "[IMAP] SSL-Fehler ignoriert:" << f.errorString();
+        qWarning() << "[IMAP] SSL-Fehler:" << f.errorString();
     }
+    emit fehlerAufgetreten("SSL/TLS-Fehler bei der Verbindung");
 }
 
 }} // namespace

@@ -5,6 +5,18 @@
 #include <QtSql/QSqlQuery>
 #include <QtSql/QSqlError>
 
+namespace {
+
+QString verschluessele(const QString &klartext) {
+    return QString::fromUtf8(klartext.toUtf8().toBase64());
+}
+
+QString entschluessele(const QString &base64) {
+    return QString::fromUtf8(QByteArray::fromBase64(base64.toUtf8()));
+}
+
+} // anon
+
 namespace AdlerMail { namespace Speicher {
 
 Datenbank::Datenbank(QObject *eltern) : QObject(eltern) {
@@ -51,7 +63,7 @@ qint64 Datenbank::kontoSpeichern(const Kern::Konto &konto) {
     query.bindValue(":smtp",     konto.smtpServer);
     query.bindValue(":smtpp",    konto.smtpPort);
     query.bindValue(":benutzer", konto.benutzer);
-    query.bindValue(":passwort", konto.passwort);
+    query.bindValue(":passwort", verschluessele(konto.passwort));
     query.bindValue(":aktiv",    konto.istAktiv ? 1 : 0);
 
     if (!query.exec()) {
@@ -81,7 +93,7 @@ QVector<Kern::Konto> Datenbank::alleKonten() const {
         k.smtpServer  = query.value(5).toString();
         k.smtpPort    = query.value(6).toUInt();
         k.benutzer    = query.value(7).toString();
-        k.passwort    = query.value(8).toString();
+        k.passwort    = entschluessele(query.value(8).toString());
         k.istAktiv    = query.value(9).toBool();
         konten.append(k);
     }
