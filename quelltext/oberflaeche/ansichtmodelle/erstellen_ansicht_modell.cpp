@@ -26,4 +26,8 @@ void ErstellenAnsichtModell::aktualisiereKannSenden() {
     if (m_kannSenden != ok) { m_kannSenden = ok; emit kannSendenGeaendert(); }
 }
 
+void ErstellenAnsichtModell::sendeAnfordern() {
+    if (m_kannSenden) emit sendeAngefordert();
+}
+
 } // namespace

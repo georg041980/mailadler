@@ -14,6 +14,8 @@ class ErstellenAnsichtModell : public QObject {
 public:
     explicit ErstellenAnsichtModell(QObject *eltern = nullptr);
 
+    Q_INVOKABLE void sendeAnfordern();
+
     QString an() const;
     void setzeAn(const QString &an);
 
@@ -30,6 +32,7 @@ signals:
     void betreffGeaendert();
     void inhaltGeaendert();
     void kannSendenGeaendert();
+    void sendeAngefordert();
 
 private:
     void aktualisiereKannSenden();

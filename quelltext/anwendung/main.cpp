@@ -14,6 +14,7 @@
 #include "kern/nachricht.h"
 #include "dienst/postfach_dienst.h"
 #include "speicher/zwischenspeicher.h"
+#include "protokoll/smtp_verbindung.h"
 
 using AdlerMail::NachrichtenListeModell;
 using AdlerMail::ErstellenAnsichtModell;
@@ -22,6 +23,7 @@ using AdlerMail::NachrichtAnsichtModell;
 using AdlerMail::Kern::Nachricht;
 using AdlerMail::Dienst::PostfachDienst;
 using AdlerMail::Speicher::Zwischenspeicher;
+using AdlerMail::Protokoll::SmtpVerbindung;
 
 int main(int anzahlArgumente, char *argumente[])
 {
@@ -66,6 +68,17 @@ int main(int anzahlArgumente, char *argumente[])
 
     QObject::connect(postfachDienst, &PostfachDienst::ordnerListeGeaendert,
             ordnerModell, &OrdnerListeModell::setzeOrdner);
+
+    // --- SMTP (wird bei Klick auf „Senden“ genutzt) ---
+
+    auto *smtp = new SmtpVerbindung(&anwendung);
+    QObject::connect(erstellenModell, &ErstellenAnsichtModell::sendeAngefordert,
+            smtp, [smtp, erstellenModell]() {
+        smtp->sende(erstellenModell->an(),
+                    {erstellenModell->an()},
+                    erstellenModell->betreff(),
+                    erstellenModell->inhalt());
+    });
 
     // --- QML starten ---
 

@@ -48,6 +48,7 @@ Rectangle {
             text: "Senden"
             enabled: erstellenAnsichtModell.kannSenden
             Layout.alignment: Qt.AlignRight
+            onClicked: erstellenAnsichtModell.sendeAnfordern()
         }
     }
 }
