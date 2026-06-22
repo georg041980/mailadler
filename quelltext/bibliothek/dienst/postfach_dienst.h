@@ -49,6 +49,7 @@ private slots:
     void beiOrdnerAusgewaehlt(int zaehler);
     void beiNachrichtHeaderEmpfangen(const Kern::Nachricht& nachricht);
     void beiNachrichtenHeaderFertig();
+    void beiNeueNachricht();
     void beiImapFehler(const QString& meldung);
 
 private:

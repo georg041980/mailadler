@@ -50,6 +50,12 @@ public slots:
     /// EXPUNGE — löscht alle als \Deleted markierten Nachrichten endgültig.
     void ordnerBereinigen();
 
+    /// IDLE starten — auf neue Nachrichten warten (Echtzeit-Push).
+    void idleStarten();
+
+    /// IDLE beenden — DONE senden.
+    void idleBeenden();
+
 signals:
     void verbunden();
     void getrennt();
@@ -61,6 +67,7 @@ signals:
     void nachrichtInhaltEmpfangen(int uid, const QString& inhalt);
     void nachrichtGeloescht();
     void ordnerBereinigt();
+    void neueNachrichtEingetroffen();
     void fehlerAufgetreten(const QString& meldung);
 
 private slots:
@@ -94,7 +101,8 @@ private:
     QByteArray m_puffer;
     QStringList m_ordnerListe;
     int m_letzteExistsZahl = 0;
-    QByteArray m_fetchPuffer; // akkumuliert mehrzeilige FETCH-Daten
+    QByteArray m_fetchPuffer;
+    bool m_imIdle = false; // akkumuliert mehrzeilige FETCH-Daten
 
     enum class Befehl
     {
@@ -107,6 +115,7 @@ private:
         NachrichtenInhalt,
         NachrichtLoeschen,
         OrdnerBereinigen,
+        Idle,
         Logout
     };
     Befehl m_aktuellerBefehl = Befehl::Keiner;

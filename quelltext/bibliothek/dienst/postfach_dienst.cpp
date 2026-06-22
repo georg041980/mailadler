@@ -25,6 +25,7 @@ void PostfachDienst::setzeImapVerbindung(Protokoll::ImapVerbindung* imap)
                 &PostfachDienst::beiNachrichtHeaderEmpfangen);
         connect(m_imap, &Protokoll::ImapVerbindung::nachrichtenHeaderFertig, this,
                 &PostfachDienst::beiNachrichtenHeaderFertig);
+        connect(m_imap, &Protokoll::ImapVerbindung::neueNachrichtEingetroffen, this, &PostfachDienst::beiNeueNachricht);
         connect(m_imap, &Protokoll::ImapVerbindung::fehlerAufgetreten, this, &PostfachDienst::beiImapFehler);
     }
 }
@@ -87,6 +88,15 @@ void PostfachDienst::beiNachrichtHeaderEmpfangen(const Kern::Nachricht& nachrich
 void PostfachDienst::beiNachrichtenHeaderFertig()
 {
     emit nachrichtenGeaendert();
+}
+
+void PostfachDienst::beiNeueNachricht()
+{
+    // Neue Nachricht während IDLE — Ordner neu laden
+    if (!m_aktuellerOrdner.isEmpty())
+        nachrichtenLaden(m_aktuellerOrdner);
+    else
+        ordnerLaden();
 }
 
 void PostfachDienst::beiImapFehler(const QString& meldung)

@@ -229,6 +229,29 @@ void ImapVerbindung::ordnerBereinigen()
     sendeBefehl("EXPUNGE");
 }
 
+void ImapVerbindung::idleStarten()
+{
+    if (!m_angemeldet)
+    {
+        emit fehlerAufgetreten("Nicht angemeldet");
+        return;
+    }
+    if (m_imIdle)
+        return;
+    m_imIdle = true;
+    m_aktuellerBefehl = Befehl::Idle;
+    sendeBefehl("IDLE");
+}
+
+void ImapVerbindung::idleBeenden()
+{
+    if (!m_imIdle)
+        return;
+    m_imIdle = false;
+    m_verbindung->write("DONE\r\n");
+    m_aktuellerBefehl = Befehl::Keiner;
+}
+
 // ---------------------------------------------------------------------------
 // IMAP-Protokoll-Helfer
 // ---------------------------------------------------------------------------
@@ -293,12 +316,18 @@ void ImapVerbindung::verarbeiteAntwortZeile(const QByteArray& zeile)
         // * 5 EXISTS — während SELECT
         if (m_aktuellerBefehl == Befehl::OrdnerAuswaehlen && zeile.contains(" EXISTS"))
         {
-            // Extrahiere Zahl: "* 5 EXISTS"
             auto leerPos = zeile.indexOf(' ');
             if (leerPos > 0)
             {
                 m_letzteExistsZahl = zeile.mid(leerPos + 1, zeile.indexOf(' ', leerPos + 1) - leerPos - 1).toInt();
             }
+            return;
+        }
+
+        // * N EXISTS — während IDLE (neue Nachricht!)
+        if (m_imIdle && zeile.contains(" EXISTS"))
+        {
+            emit neueNachrichtEingetroffen();
             return;
         }
 
@@ -353,6 +382,10 @@ void ImapVerbindung::verarbeiteAntwortZeile(const QByteArray& zeile)
         verarbeiteStatusZeile(zeile);
         return;
     }
+
+    // IDLE-Bestätigung: + idling
+    if (zeile.startsWith("+ ") && m_aktuellerBefehl == Befehl::Idle)
+        return;
 
     // BYE vom Server (unaufgefordert)
     if (zeile.startsWith("* BYE"))
