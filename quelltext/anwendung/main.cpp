@@ -14,6 +14,7 @@
 #include "ansichtmodelle/ordner_liste_modell.h"
 #include "ansichtmodelle/nachricht_ansicht_modell.h"
 #include "ansichtmodelle/konto_ansicht_modell.h"
+#include "ansichtmodelle/konto_auswahl_modell.h"
 #include "kern/nachricht.h"
 #include "dienst/postfach_dienst.h"
 #include "dienst/konto_dienst.h"
@@ -27,6 +28,7 @@ using AdlerMail::ErstellenAnsichtModell;
 using AdlerMail::OrdnerListeModell;
 using AdlerMail::NachrichtAnsichtModell;
 using AdlerMail::KontoAnsichtModell;
+using AdlerMail::KontoAuswahlModell;
 using AdlerMail::Kern::Nachricht;
 using AdlerMail::Dienst::PostfachDienst;
 using AdlerMail::Dienst::KontoDienst;
@@ -85,6 +87,10 @@ int main(int anzahlArgumente, char *argumente[])
 
     auto *kontoAnsichtModell = new KontoAnsichtModell(&anwendung);
 
+    auto konten = kontoDienst->alleKonten();
+    auto *kontoAuswahlModell = new KontoAuswahlModell(&anwendung);
+    kontoAuswahlModell->setzeKonten(konten);
+
     // --- Verdrahtung ---
 
     QObject::connect(postfachDienst, &PostfachDienst::ordnerListeGeaendert,
@@ -111,9 +117,8 @@ int main(int anzahlArgumente, char *argumente[])
 
     // --- Startup: erstes Konto → IMAP verbinden ---
 
-    auto konten = kontoDienst->alleKonten();
     if (!konten.isEmpty()) {
-        auto &k = konten[0];
+        auto k = konten[0];
         auto *imap = new ImapVerbindung(&anwendung);
         imap->setzeServer(k.imapServer);
         imap->setzePort(k.imapPort);
@@ -146,6 +151,7 @@ int main(int anzahlArgumente, char *argumente[])
     maschine.rootContext()->setContextProperty("ordnerListeModell", ordnerModell);
     maschine.rootContext()->setContextProperty("nachrichtAnsichtModell", nachrichtAnsichtModell);
     maschine.rootContext()->setContextProperty("kontoAnsichtModell", kontoAnsichtModell);
+    maschine.rootContext()->setContextProperty("kontoAuswahlModell", kontoAuswahlModell);
     maschine.rootContext()->setContextProperty("postfachDienst", postfachDienst);
     maschine.load(QUrl("qrc:/AdlerMail/HauptFenster.qml"));
 

@@ -129,6 +129,12 @@ ApplicationWindow {
                             font.bold: true
                             Layout.fillWidth: true
                         }
+                        ComboBox {
+                            model: kontoAuswahlModell
+                            textRole: "display"
+                            Layout.preferredWidth: 180
+                            onCurrentIndexChanged: kontoAuswahlModell.beiIndexGeaendert(currentIndex)
+                        }
                         Button {
                             text: "↻"
                             font.pixelSize: 16
