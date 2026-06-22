@@ -96,11 +96,15 @@ Fehlermeldungen zeigen exakte Datei und Zeile.
 
 ## Was als Nächstes
 
-1. Stub-Header für alle Module → erster erfolgreicher Build
-2. Datenbank-Klasse (`speicher/datenbank.h/.cpp`) mit Tests
-3. IMAP-Verbindung (MVP: Verbinden + Ordnerliste abrufen)
-4. Erstes QML-Fenster mit Nachrichtenliste
-5. …
+Reihenfolge der Implementierungspläne (in `.hermes/plans/`):
+
+1. `datenbank-implementierung` — Datenbank: öffnen, Konten-CRUD
+2. `zwischenspeicher` — RAM-Cache für Nachrichten
+3. `dienste` — KontoDienst + PostfachDienst (Fassade fürs UI)
+4. `imap-verbindung` — Echte IMAP/TLS-Kommunikation
+5. `smtp-verbindung` — Echte SMTP/TLS-Kommunikation
+6. (folgt) `imap-nachrichten` — SELECT + FETCH für Mail-Inhalte
+7. (folgt) `ui-verknuepfung` — ViewModel ← Dienst ← Protokoll
 
 ## Verzeichnisse, die Hermes kennen muss
 
