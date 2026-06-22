@@ -1,100 +1,124 @@
 #include <QtCore>
-#include <QtTest>
 #include <QtNetwork/QTcpServer>
 #include <QtNetwork/QTcpSocket>
+#include <QtTest>
 
 #include "dienst/postfach_dienst.h"
-#include "speicher/zwischenspeicher.h"
-#include "protokoll/imap_verbindung.h"
 #include "kern/nachricht.h"
+#include "protokoll/imap_verbindung.h"
+#include "speicher/zwischenspeicher.h"
 
 using AdlerMail::Dienst::PostfachDienst;
-using AdlerMail::Speicher::Zwischenspeicher;
-using AdlerMail::Protokoll::ImapVerbindung;
 using AdlerMail::Kern::Nachricht;
+using AdlerMail::Protokoll::ImapVerbindung;
+using AdlerMail::Speicher::Zwischenspeicher;
 
 // ---------------------------------------------------------------------------
-class MiniImapServer : public QObject {
+class MiniImapServer : public QObject
+{
     Q_OBJECT
 public:
-    explicit MiniImapServer(QObject *eltern = nullptr) : QObject(eltern) {
+    explicit MiniImapServer(QObject* eltern = nullptr) : QObject(eltern)
+    {
         m_server = new QTcpServer(this);
-        connect(m_server, &QTcpServer::newConnection, this, [this]() {
-            m_client = m_server->nextPendingConnection();
-            connect(m_client, &QTcpSocket::readyRead, this, [this]() {
-                m_puffer.append(m_client->readAll());
-                while (true) {
-                    auto pos = m_puffer.indexOf('\n');
-                    if (pos < 0) break;
-                    QByteArray zeile = m_puffer.left(pos).trimmed();
-                    m_puffer.remove(0, pos + 1);
-                    if (zeile.isEmpty()) continue;
-                    auto tag = zeile.left(zeile.indexOf(' '));
-                    auto rest = zeile.mid(zeile.indexOf(' ') + 1);
-                    if (rest.contains("LOGIN"))
-                        m_client->write(tag + " OK LOGIN ok\r\n");
-                    else if (rest.contains("LIST")) {
-                        m_client->write("* LIST (\\HasNoChildren) \"/\" \"INBOX\"\r\n");
-                        m_client->write("* LIST (\\HasNoChildren) \"/\" \"Gesendet\"\r\n");
-                        m_client->write(tag + " OK LIST done\r\n");
-                    } else if (rest.contains("SELECT")) {
-                        m_client->write("* 2 EXISTS\r\n");
-                        m_client->write("* OK [UIDVALIDITY 1]\r\n");
-                        m_client->write(tag + " OK SELECT completed\r\n");
-                    } else if (rest.contains("FETCH")) {
-                        m_client->write("* 1 FETCH (FLAGS (\\Seen)\r\n"
-                            "From: max@beispiel.de\r\nSubject: Test\r\n"
-                            "Date: Mon, 01 Jan 2024 12:00:00 +0000\r\n)\r\n");
-                        m_client->write("* 2 FETCH (FLAGS\r\n"
-                            "From: info@qt.io\r\nSubject: Qt Update\r\n"
-                            "Date: Mon, 02 Jan 2024 08:30:00 +0000\r\n)\r\n");
-                        m_client->write(tag + " OK FETCH completed\r\n");
-                    }
-                }
-            });
-            m_client->write("* OK Mock bereit\r\n");
-        });
+        connect(m_server, &QTcpServer::newConnection, this,
+                [this]()
+                {
+                    m_client = m_server->nextPendingConnection();
+                    connect(m_client, &QTcpSocket::readyRead, this,
+                            [this]()
+                            {
+                                m_puffer.append(m_client->readAll());
+                                while (true)
+                                {
+                                    auto pos = m_puffer.indexOf('\n');
+                                    if (pos < 0)
+                                        break;
+                                    QByteArray zeile = m_puffer.left(pos).trimmed();
+                                    m_puffer.remove(0, pos + 1);
+                                    if (zeile.isEmpty())
+                                        continue;
+                                    auto tag = zeile.left(zeile.indexOf(' '));
+                                    auto rest = zeile.mid(zeile.indexOf(' ') + 1);
+                                    if (rest.contains("LOGIN"))
+                                        m_client->write(tag + " OK LOGIN ok\r\n");
+                                    else if (rest.contains("LIST"))
+                                    {
+                                        m_client->write("* LIST (\\HasNoChildren) \"/\" \"INBOX\"\r\n");
+                                        m_client->write("* LIST (\\HasNoChildren) \"/\" \"Gesendet\"\r\n");
+                                        m_client->write(tag + " OK LIST done\r\n");
+                                    }
+                                    else if (rest.contains("SELECT"))
+                                    {
+                                        m_client->write("* 2 EXISTS\r\n");
+                                        m_client->write("* OK [UIDVALIDITY 1]\r\n");
+                                        m_client->write(tag + " OK SELECT completed\r\n");
+                                    }
+                                    else if (rest.contains("FETCH"))
+                                    {
+                                        m_client->write("* 1 FETCH (FLAGS (\\Seen)\r\n"
+                                                        "From: max@beispiel.de\r\nSubject: Test\r\n"
+                                                        "Date: Mon, 01 Jan 2024 12:00:00 +0000\r\n)\r\n");
+                                        m_client->write("* 2 FETCH (FLAGS\r\n"
+                                                        "From: info@qt.io\r\nSubject: Qt Update\r\n"
+                                                        "Date: Mon, 02 Jan 2024 08:30:00 +0000\r\n)\r\n");
+                                        m_client->write(tag + " OK FETCH completed\r\n");
+                                    }
+                                }
+                            });
+                    m_client->write("* OK Mock bereit\r\n");
+                });
     }
+
     bool starte() { return m_server->listen(QHostAddress::LocalHost, 0); }
+
     quint16 port() const { return m_server->serverPort(); }
 
 private:
-    QTcpServer *m_server = nullptr;
-    QTcpSocket *m_client = nullptr;
-    QByteArray  m_puffer;
+    QTcpServer* m_server = nullptr;
+    QTcpSocket* m_client = nullptr;
+    QByteArray m_puffer;
 };
 
 // ---------------------------------------------------------------------------
-class TestPostfachDienst : public QObject {
+class TestPostfachDienst : public QObject
+{
     Q_OBJECT
 
 private slots:
-    void initTestCase() {
+
+    void initTestCase()
+    {
         m_cache = new Zwischenspeicher(this);
         m_dienst = new PostfachDienst(m_cache, this);
     }
 
-    void sollteLeerStarten() {
+    void sollteLeerStarten()
+    {
         QVERIFY(m_dienst->nachrichten().isEmpty());
         QCOMPARE(m_dienst->anzahl(), 0);
     }
 
-    void sollteNachrichtenSetzen() {
+    void sollteNachrichtenSetzen()
+    {
         Nachricht n;
-        n.id = 1; n.betreff = "Test";
+        n.id = 1;
+        n.betreff = "Test";
         m_dienst->setzeNachrichten({n});
         QCOMPARE(m_dienst->anzahl(), 1);
         QCOMPARE(m_dienst->nachrichten()[0].betreff, "Test");
     }
 
-    void sollteSignaleSenden() {
+    void sollteSignaleSenden()
+    {
         QSignalSpy spion(m_dienst, &PostfachDienst::nachrichtenGeaendert);
         Nachricht n;
         m_dienst->setzeNachrichten({n});
         QCOMPARE(spion.count(), 1);
     }
 
-    void sollteOrdnerUeberImapLaden() {
+    void sollteOrdnerUeberImapLaden()
+    {
         MiniImapServer server;
         QVERIFY(server.starte());
         ImapVerbindung imap;
@@ -117,7 +141,8 @@ private slots:
         QCOMPARE(liste.size(), 2);
     }
 
-    void sollteFehlerOhneImapMelden() {
+    void sollteFehlerOhneImapMelden()
+    {
         PostfachDienst dienst(m_cache);
         QSignalSpy fehler(&dienst, &PostfachDienst::fehlerAufgetreten);
         dienst.ordnerLaden();
@@ -151,8 +176,8 @@ private slots:
     */
 
 private:
-    Zwischenspeicher *m_cache = nullptr;
-    PostfachDienst *m_dienst = nullptr;
+    Zwischenspeicher* m_cache = nullptr;
+    PostfachDienst* m_dienst = nullptr;
 };
 
 QTEST_MAIN(TestPostfachDienst)

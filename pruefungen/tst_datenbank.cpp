@@ -1,27 +1,30 @@
 #include <QtCore>
 #include <QtTest>
-#include "speicher/datenbank.h"
+
 #include "kern/konto.h"
 #include "kern/nachricht.h"
+#include "speicher/datenbank.h"
 
-using AdlerMail::Speicher::Datenbank;
 using AdlerMail::Kern::Konto;
+using AdlerMail::Speicher::Datenbank;
 
-class TestDatenbank : public QObject {
+class TestDatenbank : public QObject
+{
     Q_OBJECT
 
 private slots:
-    void initTestCase() {
+
+    void initTestCase()
+    {
         m_db = new Datenbank(this);
         QVERIFY(m_db->oeffne(":memory:"));
     }
 
-    void cleanupTestCase() {
-        m_db->schliesse();
-    }
+    void cleanupTestCase() { m_db->schliesse(); }
 
     // --- Phase 1: Öffnen/Schließen ---
-    void sollteOeffnenUndSchliessen() {
+    void sollteOeffnenUndSchliessen()
+    {
         Datenbank db;
         QVERIFY(db.oeffne(":memory:"));
         QVERIFY(db.istOffen());
@@ -29,7 +32,8 @@ private slots:
         QVERIFY(!db.istOffen());
     }
 
-    void sollteFehlerBeiUngueltigemPfadMelden() {
+    void sollteFehlerBeiUngueltigemPfadMelden()
+    {
         Datenbank db;
         QSignalSpy spion(&db, &Datenbank::fehlerAufgetreten);
 
@@ -39,7 +43,8 @@ private slots:
     }
 
     // --- Phase 2: Konto-CRUD ---
-    void sollteKontoSpeichern() {
+    void sollteKontoSpeichern()
+    {
         Konto konto;
         konto.email = "max@beispiel.de";
         konto.name = "Max Mustermann";
@@ -56,13 +61,15 @@ private slots:
         QCOMPARE(id, 1);
     }
 
-    void sollteKontoLesen() {
+    void sollteKontoLesen()
+    {
         auto konten = m_db->alleKonten();
         QCOMPARE(konten.size(), 1);
         QCOMPARE(konten[0].email, "max@beispiel.de");
     }
 
-    void sollteKontoLoeschen() {
+    void sollteKontoLoeschen()
+    {
         auto konten = m_db->alleKonten();
         QCOMPARE(konten.size(), 1);
         qint64 id = konten[0].id;
@@ -71,7 +78,8 @@ private slots:
         QCOMPARE(m_db->alleKonten().size(), 0);
     }
 
-    void sollteDoppelteEmailAblehnen() {
+    void sollteDoppelteEmailAblehnen()
+    {
         Konto konto;
         konto.email = "eindeutig@beispiel.de";
         konto.imapServer = "imap.test.de";
@@ -87,38 +95,42 @@ private slots:
     }
 
     // --- Phase 3: Nachrichten-CRUD ---
-    void sollteNachrichtSpeichern() {
+    void sollteNachrichtSpeichern()
+    {
         AdlerMail::Kern::Nachricht n;
         n.absender = "test@example.com";
-        n.betreff  = "Testnachricht";
-        n.inhalt   = "Das ist der Inhalt.";
-        n.datum    = QDateTime::currentDateTime();
+        n.betreff = "Testnachricht";
+        n.inhalt = "Das ist der Inhalt.";
+        n.datum = QDateTime::currentDateTime();
 
         qint64 id = m_db->nachrichtSpeichern(n);
         QVERIFY(id > 0);
     }
 
-    void sollteNachrichtenFuerOrdnerLesen() {
+    void sollteNachrichtenFuerOrdnerLesen()
+    {
         auto nachrichten = m_db->nachrichtenFuerOrdner("INBOX");
         QVERIFY(nachrichten.size() >= 1);
         QCOMPARE(nachrichten[0].absender, "test@example.com");
         QCOMPARE(nachrichten[0].betreff, "Testnachricht");
     }
 
-    void sollteNachrichtAlsGelesenMarkieren() {
+    void sollteNachrichtAlsGelesenMarkieren()
+    {
         auto nachrichten = m_db->nachrichtenFuerOrdner("INBOX");
         QVERIFY(!nachrichten.isEmpty());
         QVERIFY(m_db->nachrichtAlsGelesenMarkieren(nachrichten[0].id));
     }
 
-    void sollteNachrichtenLoeschen() {
+    void sollteNachrichtenLoeschen()
+    {
         m_db->nachrichtenLoeschenFuerOrdner("INBOX");
         auto nachrichten = m_db->nachrichtenFuerOrdner("INBOX");
         QCOMPARE(nachrichten.size(), 0);
     }
 
 private:
-    Datenbank *m_db = nullptr;
+    Datenbank* m_db = nullptr;
 };
 
 QTEST_MAIN(TestDatenbank)

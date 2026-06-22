@@ -1,22 +1,53 @@
 #include "nachricht_ansicht_modell.h"
 
-namespace AdlerMail {
+namespace AdlerMail
+{
 
-NachrichtAnsichtModell::NachrichtAnsichtModell(QObject *eltern)
-    : QObject(eltern) {}
+NachrichtAnsichtModell::NachrichtAnsichtModell(QObject* eltern) : QObject(eltern)
+{
+}
 
-QString NachrichtAnsichtModell::absender() const { return m_nachricht.absender; }
-QString NachrichtAnsichtModell::betreff()  const { return m_nachricht.betreff; }
-QString NachrichtAnsichtModell::inhalt()   const { return m_nachricht.inhalt; }
-QString NachrichtAnsichtModell::datum()    const {
+QString NachrichtAnsichtModell::absender() const
+{
+    return m_nachricht.absender;
+}
+
+QString NachrichtAnsichtModell::betreff() const
+{
+    return m_nachricht.betreff;
+}
+
+QString NachrichtAnsichtModell::inhalt() const
+{
+    return m_nachricht.inhalt;
+}
+
+QString NachrichtAnsichtModell::datum() const
+{
     return m_nachricht.datum.toString("dd.MM.yyyy hh:mm");
 }
-bool NachrichtAnsichtModell::hatNachricht() const { return m_hatNachricht; }
-bool NachrichtAnsichtModell::istHtml() const { return !m_nachricht.inhaltHtml.isEmpty(); }
-int NachrichtAnsichtModell::anzahlAnhaenge() const { return static_cast<int>(m_anhaengeNamen.size()); }
-QStringList NachrichtAnsichtModell::anhaengeNamen() const { return m_anhaengeNamen; }
 
-void NachrichtAnsichtModell::setzeNachricht(const Kern::Nachricht &nachricht)
+bool NachrichtAnsichtModell::hatNachricht() const
+{
+    return m_hatNachricht;
+}
+
+bool NachrichtAnsichtModell::istHtml() const
+{
+    return !m_nachricht.inhaltHtml.isEmpty();
+}
+
+int NachrichtAnsichtModell::anzahlAnhaenge() const
+{
+    return static_cast<int>(m_anhaengeNamen.size());
+}
+
+QStringList NachrichtAnsichtModell::anhaengeNamen() const
+{
+    return m_anhaengeNamen;
+}
+
+void NachrichtAnsichtModell::setzeNachricht(const Kern::Nachricht& nachricht)
 {
     m_nachricht = nachricht;
     m_hatNachricht = true;
@@ -25,9 +56,9 @@ void NachrichtAnsichtModell::setzeNachricht(const Kern::Nachricht &nachricht)
 
 void NachrichtAnsichtModell::leeren()
 {
-    m_nachricht = Kern::Nachricht{};
+    m_nachricht = Kern::Nachricht {};
     m_hatNachricht = false;
     emit nachrichtGeaendert();
 }
 
-} // namespace
+} // namespace AdlerMail

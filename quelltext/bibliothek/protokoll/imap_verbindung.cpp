@@ -1,15 +1,18 @@
 #include "imap_verbindung.h"
+
 #include <QtCore/QDebug>
 #include <QtCore/QRegularExpression>
 
-namespace AdlerMail { namespace Protokoll {
+namespace AdlerMail
+{
+namespace Protokoll
+{
 
 // ---------------------------------------------------------------------------
 // Konstruktor / Destruktor
 // ---------------------------------------------------------------------------
 
-ImapVerbindung::ImapVerbindung(QObject *eltern)
-    : QObject(eltern)
+ImapVerbindung::ImapVerbindung(QObject* eltern) : QObject(eltern)
 {
 }
 
@@ -22,22 +25,46 @@ ImapVerbindung::~ImapVerbindung()
 // Getter / Setter
 // ---------------------------------------------------------------------------
 
-void ImapVerbindung::setzeServer(const QString &server) { m_server = server; }
-void ImapVerbindung::setzePort(quint16 port)            { m_port = port;   }
-void ImapVerbindung::setzeTls(bool aktiv)               { m_tls = aktiv;   }
+void ImapVerbindung::setzeServer(const QString& server)
+{
+    m_server = server;
+}
 
-QString ImapVerbindung::server() const { return m_server; }
-quint16 ImapVerbindung::port()   const { return m_port;   }
-bool    ImapVerbindung::istTls() const { return m_tls;    }
+void ImapVerbindung::setzePort(quint16 port)
+{
+    m_port = port;
+}
+
+void ImapVerbindung::setzeTls(bool aktiv)
+{
+    m_tls = aktiv;
+}
+
+QString ImapVerbindung::server() const
+{
+    return m_server;
+}
+
+quint16 ImapVerbindung::port() const
+{
+    return m_port;
+}
+
+bool ImapVerbindung::istTls() const
+{
+    return m_tls;
+}
 
 bool ImapVerbindung::istVerbunden() const
 {
-    return m_verbindung
-        && m_verbindung->state() == QAbstractSocket::ConnectedState
-        && (m_tls ? m_verbindung->isEncrypted() : true);
+    return m_verbindung && m_verbindung->state() == QAbstractSocket::ConnectedState &&
+           (m_tls ? m_verbindung->isEncrypted() : true);
 }
 
-bool ImapVerbindung::istAngemeldet() const { return m_angemeldet; }
+bool ImapVerbindung::istAngemeldet() const
+{
+    return m_angemeldet;
+}
 
 // ---------------------------------------------------------------------------
 // Verbindung
@@ -45,55 +72,59 @@ bool ImapVerbindung::istAngemeldet() const { return m_angemeldet; }
 
 void ImapVerbindung::verbinden()
 {
-    if (istVerbunden()) return;
+    if (istVerbunden())
+        return;
 
-    if (!m_verbindung) {
+    if (!m_verbindung)
+    {
         m_verbindung = new QSslSocket(this);
 
-        if (m_tls) {
+        if (m_tls)
+        {
             // TLS: verbunden() erst nach Verschlüsselung
-            connect(m_verbindung, &QSslSocket::connected,
-                    this, &ImapVerbindung::beiVerbunden);
-            connect(m_verbindung, &QSslSocket::encrypted,
-                    this, &ImapVerbindung::beiVerschluesselt);
-        } else {
+            connect(m_verbindung, &QSslSocket::connected, this, &ImapVerbindung::beiVerbunden);
+            connect(m_verbindung, &QSslSocket::encrypted, this, &ImapVerbindung::beiVerschluesselt);
+        }
+        else
+        {
             // Plain-TCP: verbunden() direkt bei connect
-            connect(m_verbindung, &QSslSocket::connected,
-                    this, [this]() {
-                qDebug() << "[IMAP] TCP verbunden mit" << m_server << ":" << m_port;
-                emit verbunden();
-            });
+            connect(m_verbindung, &QSslSocket::connected, this,
+                    [this]()
+                    {
+                        qDebug() << "[IMAP] TCP verbunden mit" << m_server << ":" << m_port;
+                        emit verbunden();
+                    });
         }
 
-        connect(m_verbindung, &QSslSocket::readyRead,
-                this, &ImapVerbindung::beiBereitZumLesen);
-        connect(m_verbindung, &QSslSocket::disconnected,
-                this, &ImapVerbindung::beiTrennung);
+        connect(m_verbindung, &QSslSocket::readyRead, this, &ImapVerbindung::beiBereitZumLesen);
+        connect(m_verbindung, &QSslSocket::disconnected, this, &ImapVerbindung::beiTrennung);
 
         // Fehlersignale (Qt 6.4-kompatibel: QOverload)
-        connect(m_verbindung,
-                QOverload<QAbstractSocket::SocketError>::of(&QSslSocket::errorOccurred),
-                this, &ImapVerbindung::beiSocketFehler);
-        connect(m_verbindung, &QSslSocket::sslErrors,
-                this, &ImapVerbindung::beiSslFehlern);
+        connect(m_verbindung, QOverload<QAbstractSocket::SocketError>::of(&QSslSocket::errorOccurred), this,
+                &ImapVerbindung::beiSocketFehler);
+        connect(m_verbindung, &QSslSocket::sslErrors, this, &ImapVerbindung::beiSslFehlern);
     }
 
     m_aktuellerBefehl = Befehl::Verbinden;
-    m_tagZaehler      = 0;
+    m_tagZaehler = 0;
     m_puffer.clear();
     m_angemeldet = false;
     m_willTrennen = false;
 
-    if (m_tls) {
+    if (m_tls)
+    {
         m_verbindung->connectToHostEncrypted(m_server, m_port);
-    } else {
+    }
+    else
+    {
         m_verbindung->connectToHost(m_server, m_port);
     }
 }
 
 void ImapVerbindung::trennen()
 {
-    if (!m_verbindung || !istVerbunden()) return;
+    if (!m_verbindung || !istVerbunden())
+        return;
 
     m_willTrennen = true;
     m_aktuellerBefehl = Befehl::Logout;
@@ -104,13 +135,15 @@ void ImapVerbindung::trennen()
 // IMAP-Kommandos
 // ---------------------------------------------------------------------------
 
-void ImapVerbindung::anmelden(const QString &benutzer, const QString &passwort)
+void ImapVerbindung::anmelden(const QString& benutzer, const QString& passwort)
 {
-    if (!istVerbunden()) {
+    if (!istVerbunden())
+    {
         emit fehlerAufgetreten("Nicht verbunden — vor dem Anmelden verbinden() aufrufen");
         return;
     }
-    if (m_angemeldet) {
+    if (m_angemeldet)
+    {
         emit fehlerAufgetreten("Bereits angemeldet");
         return;
     }
@@ -122,7 +155,8 @@ void ImapVerbindung::anmelden(const QString &benutzer, const QString &passwort)
 
 void ImapVerbindung::ordnerListeAbrufen()
 {
-    if (!m_angemeldet) {
+    if (!m_angemeldet)
+    {
         emit fehlerAufgetreten("Nicht angemeldet — vorher anmelden() aufrufen");
         return;
     }
@@ -132,9 +166,10 @@ void ImapVerbindung::ordnerListeAbrufen()
     sendeBefehl("LIST \"\" \"*\"");
 }
 
-void ImapVerbindung::ordnerAuswaehlen(const QString &ordnerName)
+void ImapVerbindung::ordnerAuswaehlen(const QString& ordnerName)
 {
-    if (!m_angemeldet) {
+    if (!m_angemeldet)
+    {
         emit fehlerAufgetreten("Nicht angemeldet");
         return;
     }
@@ -144,11 +179,13 @@ void ImapVerbindung::ordnerAuswaehlen(const QString &ordnerName)
 
 void ImapVerbindung::nachrichtenHeaderAbrufen(int von, int bis)
 {
-    if (!m_angemeldet) {
+    if (!m_angemeldet)
+    {
         emit fehlerAufgetreten("Nicht angemeldet");
         return;
     }
-    if (von < 1 || bis < von) {
+    if (von < 1 || bis < von)
+    {
         emit fehlerAufgetreten("Ungültiger Bereich für FETCH");
         return;
     }
@@ -160,7 +197,8 @@ void ImapVerbindung::nachrichtenHeaderAbrufen(int von, int bis)
 
 void ImapVerbindung::nachrichtInhaltAbrufen(int uid)
 {
-    if (!m_angemeldet) {
+    if (!m_angemeldet)
+    {
         emit fehlerAufgetreten("Nicht angemeldet");
         return;
     }
@@ -171,7 +209,8 @@ void ImapVerbindung::nachrichtInhaltAbrufen(int uid)
 
 void ImapVerbindung::nachrichtLoeschen(int uid)
 {
-    if (!m_angemeldet) {
+    if (!m_angemeldet)
+    {
         emit fehlerAufgetreten("Nicht angemeldet");
         return;
     }
@@ -181,7 +220,8 @@ void ImapVerbindung::nachrichtLoeschen(int uid)
 
 void ImapVerbindung::ordnerBereinigen()
 {
-    if (!m_angemeldet) {
+    if (!m_angemeldet)
+    {
         emit fehlerAufgetreten("Nicht angemeldet");
         return;
     }
@@ -193,7 +233,7 @@ void ImapVerbindung::ordnerBereinigen()
 // IMAP-Protokoll-Helfer
 // ---------------------------------------------------------------------------
 
-QByteArray ImapVerbindung::sendeBefehl(const QByteArray &befehl)
+QByteArray ImapVerbindung::sendeBefehl(const QByteArray& befehl)
 {
     m_tagZaehler++;
     QByteArray tag = "A" + QByteArray::number(m_tagZaehler).rightJustified(4, '0');
@@ -214,58 +254,72 @@ void ImapVerbindung::beiBereitZumLesen()
     m_puffer.append(m_verbindung->readAll());
 
     // Zeilenweise verarbeiten
-    while (true) {
+    while (true)
+    {
         auto pos = m_puffer.indexOf('\n');
-        if (pos < 0) break;  // Keine vollständige Zeile
+        if (pos < 0)
+            break; // Keine vollständige Zeile
 
         QByteArray zeile = m_puffer.left(pos).trimmed();
         m_puffer.remove(0, pos + 1);
 
-        if (zeile.isEmpty()) continue;
+        if (zeile.isEmpty())
+            continue;
         verarbeiteAntwortZeile(zeile);
     }
 }
 
-void ImapVerbindung::verarbeiteAntwortZeile(const QByteArray &zeile)
+void ImapVerbindung::verarbeiteAntwortZeile(const QByteArray& zeile)
 {
     // IMAP-Begrüßung: * OK [CAPABILITY ...] ...
-    if (zeile.startsWith("* OK") && m_aktuellerBefehl == Befehl::Verbinden) {
+    if (zeile.startsWith("* OK") && m_aktuellerBefehl == Befehl::Verbinden)
+    {
         // Begrüßung empfangen — Verbindung bereit
         m_aktuellerBefehl = Befehl::Keiner;
         return;
     }
 
     // Unaufgeforderte Daten: * LIST ..., * EXISTS, * FETCH, ...
-    if (zeile.startsWith("* ")) {
-        if (m_aktuellerBefehl == Befehl::OrdnerListe && istListeZeile(zeile)) {
+    if (zeile.startsWith("* "))
+    {
+        if (m_aktuellerBefehl == Befehl::OrdnerListe && istListeZeile(zeile))
+        {
             QString ordner = parseListeOrdnerName(zeile);
-            if (!ordner.isEmpty()) m_ordnerListe.append(ordner);
+            if (!ordner.isEmpty())
+                m_ordnerListe.append(ordner);
             return;
         }
 
         // * 5 EXISTS — während SELECT
-        if (m_aktuellerBefehl == Befehl::OrdnerAuswaehlen && zeile.contains(" EXISTS")) {
+        if (m_aktuellerBefehl == Befehl::OrdnerAuswaehlen && zeile.contains(" EXISTS"))
+        {
             // Extrahiere Zahl: "* 5 EXISTS"
             auto leerPos = zeile.indexOf(' ');
-            if (leerPos > 0) {
+            if (leerPos > 0)
+            {
                 m_letzteExistsZahl = zeile.mid(leerPos + 1, zeile.indexOf(' ', leerPos + 1) - leerPos - 1).toInt();
             }
             return;
         }
 
         // * 1 FETCH (...) — während NachrichtenHeader
-        if (m_aktuellerBefehl == Befehl::NachrichtenHeader && zeile.contains("FETCH")) {
-            if (!m_fetchPuffer.isEmpty()) {
+        if (m_aktuellerBefehl == Befehl::NachrichtenHeader && zeile.contains("FETCH"))
+        {
+            if (!m_fetchPuffer.isEmpty())
+            {
                 auto nachricht = parseFetchZeile(m_fetchPuffer);
-                if (!nachricht.betreff.isEmpty() || !nachricht.absender.isEmpty()) {
+                if (!nachricht.betreff.isEmpty() || !nachricht.absender.isEmpty())
+                {
                     emit nachrichtHeaderEmpfangen(nachricht);
                 }
             }
             m_fetchPuffer = zeile;
             // Wenn diese Zeile bereits die schließende ) enthält, direkt parsen
-            if (zeile.trimmed().endsWith(')')) {
+            if (zeile.trimmed().endsWith(')'))
+            {
                 auto nachricht = parseFetchZeile(m_fetchPuffer);
-                if (!nachricht.betreff.isEmpty() || !nachricht.absender.isEmpty()) {
+                if (!nachricht.betreff.isEmpty() || !nachricht.absender.isEmpty())
+                {
                     emit nachrichtHeaderEmpfangen(nachricht);
                     m_fetchPuffer.clear();
                 }
@@ -278,11 +332,14 @@ void ImapVerbindung::verarbeiteAntwortZeile(const QByteArray &zeile)
     }
 
     // Akkumulierte FETCH-Zeilen fortsetzen (nicht *-Zeilen)
-    if (m_aktuellerBefehl == Befehl::NachrichtenHeader && !m_fetchPuffer.isEmpty()) {
+    if (m_aktuellerBefehl == Befehl::NachrichtenHeader && !m_fetchPuffer.isEmpty())
+    {
         m_fetchPuffer.append("\r\n" + zeile);
-        if (zeile.trimmed().endsWith(')')) {
+        if (zeile.trimmed().endsWith(')'))
+        {
             auto nachricht = parseFetchZeile(m_fetchPuffer);
-            if (!nachricht.betreff.isEmpty() || !nachricht.absender.isEmpty()) {
+            if (!nachricht.betreff.isEmpty() || !nachricht.absender.isEmpty())
+            {
                 emit nachrichtHeaderEmpfangen(nachricht);
             }
             m_fetchPuffer.clear();
@@ -291,39 +348,41 @@ void ImapVerbindung::verarbeiteAntwortZeile(const QByteArray &zeile)
     }
 
     // Statuszeile: TAG OK/NO/BAD [rest]
-    if (istStatusZeile(zeile)) {
+    if (istStatusZeile(zeile))
+    {
         verarbeiteStatusZeile(zeile);
         return;
     }
 
     // BYE vom Server (unaufgefordert)
-    if (zeile.startsWith("* BYE")) {
-        emit fehlerAufgetreten("Server hat Verbindung beendet: " +
-                               QString::fromUtf8(zeile.mid(5).trimmed()));
+    if (zeile.startsWith("* BYE"))
+    {
+        emit fehlerAufgetreten("Server hat Verbindung beendet: " + QString::fromUtf8(zeile.mid(5).trimmed()));
         return;
     }
 }
 
-bool ImapVerbindung::istStatusZeile(const QByteArray &zeile) const
+bool ImapVerbindung::istStatusZeile(const QByteArray& zeile) const
 {
-    return zeile.startsWith(m_letzterTag + " OK")
-        || zeile.startsWith(m_letzterTag + " NO")
-        || zeile.startsWith(m_letzterTag + " BAD");
+    return zeile.startsWith(m_letzterTag + " OK") || zeile.startsWith(m_letzterTag + " NO") ||
+           zeile.startsWith(m_letzterTag + " BAD");
 }
 
-void ImapVerbindung::verarbeiteStatusZeile(const QByteArray &zeile)
+void ImapVerbindung::verarbeiteStatusZeile(const QByteArray& zeile)
 {
-    const bool ok  = zeile.contains(" OK ");
+    const bool ok = zeile.contains(" OK ");
     const bool bad = zeile.contains(" BAD ");
 
-    if (!ok) {
+    if (!ok)
+    {
         QByteArray meldung = bad ? "BAD — unbekannter Befehl: " : "NO — fehlgeschlagen: ";
         meldung += zeile.mid(m_letzterTag.size() + 4).trimmed();
         emit fehlerAufgetreten(QString::fromUtf8(meldung));
         return;
     }
 
-    switch (m_aktuellerBefehl) {
+    switch (m_aktuellerBefehl)
+    {
     case Befehl::Anmelden:
         m_angemeldet = true;
         emit angemeldet();
@@ -364,24 +423,26 @@ void ImapVerbindung::verarbeiteStatusZeile(const QByteArray &zeile)
     m_aktuellerBefehl = Befehl::Keiner;
 }
 
-bool ImapVerbindung::istListeZeile(const QByteArray &zeile) const
+bool ImapVerbindung::istListeZeile(const QByteArray& zeile) const
 {
     // * LIST (...) "/" "INBOX"
     return zeile.startsWith("* LIST ");
 }
 
-QString ImapVerbindung::parseListeOrdnerName(const QByteArray &zeile) const
+QString ImapVerbindung::parseListeOrdnerName(const QByteArray& zeile) const
 {
-    auto ende  = zeile.lastIndexOf('"');
-    if (ende < 0) return QString();
+    auto ende = zeile.lastIndexOf('"');
+    if (ende < 0)
+        return QString();
 
     auto start = zeile.lastIndexOf('"', ende - 1);
-    if (start < 0) return QString();
+    if (start < 0)
+        return QString();
 
     return QString::fromUtf8(zeile.mid(start + 1, ende - start - 1));
 }
 
-Kern::Nachricht ImapVerbindung::parseFetchZeile(const QByteArray &zeile) const
+Kern::Nachricht ImapVerbindung::parseFetchZeile(const QByteArray& zeile) const
 {
     // * 1 FETCH (FLAGS (\Seen) BODY[HEADER.FIELDS (FROM SUBJECT DATE)] {…}
     // Im Header-Teil: From: absender\r\nSubject: betreff\r\nDate: datum
@@ -389,37 +450,50 @@ Kern::Nachricht ImapVerbindung::parseFetchZeile(const QByteArray &zeile) const
 
     // Suche nach "From: " im Header
     auto fromPos = zeile.indexOf("From: ");
-    if (fromPos >= 0) {
+    if (fromPos >= 0)
+    {
         auto start = fromPos + 6;
         auto end = zeile.indexOf("\r\n", start);
-        if (end < 0) end = zeile.indexOf('\r', start);
-        if (end < 0) end = zeile.indexOf('\n', start);
-        if (end < 0) end = zeile.length();
+        if (end < 0)
+            end = zeile.indexOf('\r', start);
+        if (end < 0)
+            end = zeile.indexOf('\n', start);
+        if (end < 0)
+            end = zeile.length();
         n.absender = QString::fromUtf8(zeile.mid(start, end - start)).trimmed();
     }
 
     // Suche nach "Subject: "
     auto subPos = zeile.indexOf("Subject: ");
-    if (subPos >= 0) {
+    if (subPos >= 0)
+    {
         auto start = subPos + 9;
         auto end = zeile.indexOf("\r\n", start);
-        if (end < 0) end = zeile.indexOf('\r', start);
-        if (end < 0) end = zeile.indexOf('\n', start);
-        if (end < 0) end = zeile.length();
+        if (end < 0)
+            end = zeile.indexOf('\r', start);
+        if (end < 0)
+            end = zeile.indexOf('\n', start);
+        if (end < 0)
+            end = zeile.length();
         n.betreff = QString::fromUtf8(zeile.mid(start, end - start)).trimmed();
     }
 
     // Suche nach "Date: "
     auto datePos = zeile.indexOf("Date: ");
-    if (datePos >= 0) {
+    if (datePos >= 0)
+    {
         auto start = datePos + 6;
         auto end = zeile.indexOf("\r\n", start);
-        if (end < 0) end = zeile.indexOf('\r', start);
-        if (end < 0) end = zeile.indexOf('\n', start);
-        if (end < 0) end = zeile.length();
+        if (end < 0)
+            end = zeile.indexOf('\r', start);
+        if (end < 0)
+            end = zeile.indexOf('\n', start);
+        if (end < 0)
+            end = zeile.length();
         QString datStr = QString::fromUtf8(zeile.mid(start, end - start)).trimmed();
         n.datum = QDateTime::fromString(datStr, Qt::RFC2822Date);
-        if (!n.datum.isValid()) n.datum = QDateTime::currentDateTime();
+        if (!n.datum.isValid())
+            n.datum = QDateTime::currentDateTime();
     }
 
     return n;
@@ -453,19 +527,21 @@ void ImapVerbindung::beiTrennung()
 void ImapVerbindung::beiSocketFehler(QAbstractSocket::SocketError fehler)
 {
     Q_UNUSED(fehler)
-    QString meldung = m_verbindung ? m_verbindung->errorString()
-                                   : "Unbekannter Socket-Fehler";
+    QString meldung = m_verbindung ? m_verbindung->errorString() : "Unbekannter Socket-Fehler";
     emit fehlerAufgetreten(meldung);
 }
 
-void ImapVerbindung::beiSslFehlern(const QList<QSslError> &fehler)
+void ImapVerbindung::beiSslFehlern(const QList<QSslError>& fehler)
 {
     // Bei Tests (Plain-TCP) ignorieren, sonst Fehler melden
-    if (!m_tls) return;
-    for (const auto &f : fehler) {
+    if (!m_tls)
+        return;
+    for (const auto& f : fehler)
+    {
         qWarning() << "[IMAP] SSL-Fehler:" << f.errorString();
     }
     emit fehlerAufgetreten("SSL/TLS-Fehler bei der Verbindung");
 }
 
-}} // namespace
+} // namespace Protokoll
+} // namespace AdlerMail

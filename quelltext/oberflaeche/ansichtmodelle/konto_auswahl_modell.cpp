@@ -1,25 +1,32 @@
 #include "konto_auswahl_modell.h"
 
-namespace AdlerMail {
+namespace AdlerMail
+{
 
-KontoAuswahlModell::KontoAuswahlModell(QObject *eltern) : QStringListModel(eltern) {}
+KontoAuswahlModell::KontoAuswahlModell(QObject* eltern) : QStringListModel(eltern)
+{
+}
 
-void KontoAuswahlModell::setzeKonten(const QVector<Kern::Konto> &konten) {
+void KontoAuswahlModell::setzeKonten(const QVector<Kern::Konto>& konten)
+{
     m_konten = konten;
     QStringList namen;
-    for (const auto &k : konten)
+    for (const auto& k : konten)
         namen.append(k.email);
     setStringList(namen);
 }
 
-Kern::Konto KontoAuswahlModell::kontoBei(int index) const {
-    if (index >= 0 && index < m_konten.size()) return m_konten[index];
+Kern::Konto KontoAuswahlModell::kontoBei(int index) const
+{
+    if (index >= 0 && index < m_konten.size())
+        return m_konten[index];
     return {};
 }
 
-void KontoAuswahlModell::beiIndexGeaendert(int index) {
+void KontoAuswahlModell::beiIndexGeaendert(int index)
+{
     if (index >= 0 && index < m_konten.size())
         emit kontoAusgewaehlt(m_konten[index]);
 }
 
-} // namespace
+} // namespace AdlerMail

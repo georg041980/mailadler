@@ -3,9 +3,9 @@
 // ---------------------------------------------------------------------------
 
 #include <QtCore>
-#include <QtTest>
 #include <QtNetwork/QTcpServer>
 #include <QtNetwork/QTcpSocket>
+#include <QtTest>
 
 #include "protokoll/imap_verbindung.h"
 
@@ -17,39 +17,35 @@ using AdlerMail::Protokoll::ImapVerbindung;
  * Verwendet QTcpServer für lokale Tests ohne echten IMAP-Server.
  * Sendet realistische, aber minimale IMAP-Antworten.
  */
-class MockImapServer : public QObject {
+class MockImapServer : public QObject
+{
     Q_OBJECT
 public:
-    explicit MockImapServer(QObject *eltern = nullptr)
-        : QObject(eltern)
+    explicit MockImapServer(QObject* eltern = nullptr) : QObject(eltern)
     {
         m_server = new QTcpServer(this);
-        connect(m_server, &QTcpServer::newConnection,
-                this, &MockImapServer::beiNeuerVerbindung);
+        connect(m_server, &QTcpServer::newConnection, this, &MockImapServer::beiNeuerVerbindung);
     }
 
-    bool starte(quint16 port = 0)
-    {
-        return m_server->listen(QHostAddress::LocalHost, port);
-    }
+    bool starte(quint16 port = 0) { return m_server->listen(QHostAddress::LocalHost, port); }
 
     quint16 serverPort() const { return m_server->serverPort(); }
+
     void schliesse() { m_server->close(); }
 
     /// Konfiguriert, ob LOGIN mit OK oder NO beantwortet wird.
     void setzeAnmeldungErfolgreich(bool ok) { m_anmeldungOk = ok; }
 
 signals:
-    void befehlEmpfangen(const QByteArray &befehl);
+    void befehlEmpfangen(const QByteArray& befehl);
 
 private slots:
+
     void beiNeuerVerbindung()
     {
         m_clientSocket = m_server->nextPendingConnection();
-        connect(m_clientSocket, &QTcpSocket::readyRead,
-                this, &MockImapServer::beiBereitZumLesen);
-        connect(m_clientSocket, &QTcpSocket::disconnected,
-                m_clientSocket, &QObject::deleteLater);
+        connect(m_clientSocket, &QTcpSocket::readyRead, this, &MockImapServer::beiBereitZumLesen);
+        connect(m_clientSocket, &QTcpSocket::disconnected, m_clientSocket, &QObject::deleteLater);
 
         // IMAP-Begrüßung senden
         m_clientSocket->write("* OK IMAP4rev1 Mock-Server bereit\r\n");
@@ -59,79 +55,95 @@ private slots:
     {
         m_puffer.append(m_clientSocket->readAll());
 
-        while (true) {
+        while (true)
+        {
             auto pos = m_puffer.indexOf('\n');
-            if (pos < 0) break;
+            if (pos < 0)
+                break;
 
             QByteArray zeile = m_puffer.left(pos).trimmed();
             m_puffer.remove(0, pos + 1);
 
-            if (zeile.isEmpty()) continue;
+            if (zeile.isEmpty())
+                continue;
             emit befehlEmpfangen(zeile);
             verarbeiteBefehl(zeile);
         }
     }
 
 private:
-    void verarbeiteBefehl(const QByteArray &zeile)
+    void verarbeiteBefehl(const QByteArray& zeile)
     {
         // Extrahiere Tag (erstes Wort)
         auto leerPos = zeile.indexOf(' ');
         QByteArray tag = (leerPos > 0) ? zeile.left(leerPos) : QByteArray();
         QByteArray rest = (leerPos > 0) ? zeile.mid(leerPos + 1) : zeile;
 
-        if (rest.startsWith("LOGIN")) {
-            if (m_anmeldungOk) {
+        if (rest.startsWith("LOGIN"))
+        {
+            if (m_anmeldungOk)
+            {
                 m_clientSocket->write(tag + " OK LOGIN erfolgreich\r\n");
-            } else {
+            }
+            else
+            {
                 m_clientSocket->write(tag + " NO LOGIN fehlgeschlagen\r\n");
             }
-        } else if (rest.startsWith("LIST")) {
+        }
+        else if (rest.startsWith("LIST"))
+        {
             m_clientSocket->write("* LIST (\\HasNoChildren) \"/\" \"INBOX\"\r\n");
             m_clientSocket->write("* LIST (\\HasNoChildren) \"/\" \"Gesendet\"\r\n");
             m_clientSocket->write("* LIST (\\HasNoChildren) \"/\" \"Entwürfe\"\r\n");
             m_clientSocket->write(tag + " OK LIST abgeschlossen\r\n");
-        } else if (rest.startsWith("LOGOUT")) {
+        }
+        else if (rest.startsWith("LOGOUT"))
+        {
             m_clientSocket->write("* BYE Auf Wiedersehen\r\n");
             m_clientSocket->write(tag + " OK LOGOUT\r\n");
             m_clientSocket->disconnectFromHost();
-        } else if (rest.startsWith("SELECT")) {
+        }
+        else if (rest.startsWith("SELECT"))
+        {
             m_clientSocket->write("* 3 EXISTS\r\n");
             m_clientSocket->write("* 0 RECENT\r\n");
             m_clientSocket->write("* OK [UIDVALIDITY 1]\r\n");
             m_clientSocket->write(tag + " OK SELECT completed\r\n");
-        } else if (rest.startsWith("FETCH")) {
-            m_clientSocket->write(
-                "* 1 FETCH (FLAGS (\\Seen)\r\n"
-                "From: max@beispiel.de\r\n"
-                "Subject: Test\r\n"
-                "Date: Mon, 01 Jan 2024 12:00:00 +0000\r\n"
-                ")\r\n");
-            m_clientSocket->write(
-                "* 2 FETCH (FLAGS\r\n"
-                "From: info@qt.io\r\n"
-                "Subject: Qt Update\r\n"
-                "Date: Mon, 02 Jan 2024 08:30:00 +0000\r\n"
-                ")\r\n");
+        }
+        else if (rest.startsWith("FETCH"))
+        {
+            m_clientSocket->write("* 1 FETCH (FLAGS (\\Seen)\r\n"
+                                  "From: max@beispiel.de\r\n"
+                                  "Subject: Test\r\n"
+                                  "Date: Mon, 01 Jan 2024 12:00:00 +0000\r\n"
+                                  ")\r\n");
+            m_clientSocket->write("* 2 FETCH (FLAGS\r\n"
+                                  "From: info@qt.io\r\n"
+                                  "Subject: Qt Update\r\n"
+                                  "Date: Mon, 02 Jan 2024 08:30:00 +0000\r\n"
+                                  ")\r\n");
             m_clientSocket->write(tag + " OK FETCH completed\r\n");
         }
     }
 
-    QTcpServer *m_server = nullptr;
-    QTcpSocket *m_clientSocket = nullptr;
-    QByteArray  m_puffer;
-    bool        m_anmeldungOk = true;
+    QTcpServer* m_server = nullptr;
+    QTcpSocket* m_clientSocket = nullptr;
+    QByteArray m_puffer;
+    bool m_anmeldungOk = true;
 };
 
 // ---------------------------------------------------------------------------
 // Tests
 // ---------------------------------------------------------------------------
 
-class TestImapVerbindung : public QObject {
+class TestImapVerbindung : public QObject
+{
     Q_OBJECT
 
 private slots:
+
     void initTestCase() {}
+
     void cleanupTestCase() {}
 
     /// Prüft, dass verbinden() das verbunden()-Signal auslöst.

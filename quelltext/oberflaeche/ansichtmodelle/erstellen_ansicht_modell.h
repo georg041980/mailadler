@@ -3,9 +3,11 @@
 #include <QtCore/QString>
 #include <QtCore/QStringList>
 
-namespace AdlerMail {
+namespace AdlerMail
+{
 
-class ErstellenAnsichtModell : public QObject {
+class ErstellenAnsichtModell : public QObject
+{
     Q_OBJECT
     Q_PROPERTY(QString an READ an WRITE setzeAn NOTIFY anGeaendert)
     Q_PROPERTY(QString cc READ cc WRITE setzeCc NOTIFY ccGeaendert)
@@ -15,21 +17,21 @@ class ErstellenAnsichtModell : public QObject {
     Q_PROPERTY(QStringList anhaenge READ anhaenge NOTIFY anhaengeGeaendert)
 
 public:
-    explicit ErstellenAnsichtModell(QObject *eltern = nullptr);
+    explicit ErstellenAnsichtModell(QObject* eltern = nullptr);
 
     Q_INVOKABLE void sendeAnfordern();
     Q_INVOKABLE void entwurfSpeichern();
-    Q_INVOKABLE void antwortVorbereiten(const QString &an, const QString &betreff, const QString &zitat);
-    Q_INVOKABLE void anhangHinzufuegen(const QString &pfad);
+    Q_INVOKABLE void antwortVorbereiten(const QString& an, const QString& betreff, const QString& zitat);
+    Q_INVOKABLE void anhangHinzufuegen(const QString& pfad);
 
     QString an() const;
-    void setzeAn(const QString &an);
+    void setzeAn(const QString& an);
     QString cc() const;
-    void setzeCc(const QString &cc);
+    void setzeCc(const QString& cc);
     QString betreff() const;
-    void setzeBetreff(const QString &betreff);
+    void setzeBetreff(const QString& betreff);
     QString inhalt() const;
-    void setzeInhalt(const QString &inhalt);
+    void setzeInhalt(const QString& inhalt);
     bool kannSenden() const;
     QStringList anhaenge() const;
 
@@ -50,4 +52,4 @@ private:
     QStringList m_anhaenge;
 };
 
-} // namespace
+} // namespace AdlerMail

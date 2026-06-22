@@ -1,18 +1,21 @@
 #pragma once
 #include <QtCore/QStringListModel>
+
 #include "../bibliothek/kern/konto.h"
 
-namespace AdlerMail {
+namespace AdlerMail
+{
 
-class KontoAuswahlModell : public QStringListModel {
+class KontoAuswahlModell : public QStringListModel
+{
     Q_OBJECT
 public:
-    explicit KontoAuswahlModell(QObject *eltern = nullptr);
-    void setzeKonten(const QVector<Kern::Konto> &konten);
+    explicit KontoAuswahlModell(QObject* eltern = nullptr);
+    void setzeKonten(const QVector<Kern::Konto>& konten);
     Kern::Konto kontoBei(int index) const;
 
 signals:
-    void kontoAusgewaehlt(const Kern::Konto &konto);
+    void kontoAusgewaehlt(const Kern::Konto& konto);
 
 public slots:
     void beiIndexGeaendert(int index);
@@ -21,4 +24,4 @@ private:
     QVector<Kern::Konto> m_konten;
 };
 
-} // namespace
+} // namespace AdlerMail
