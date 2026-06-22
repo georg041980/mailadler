@@ -40,6 +40,12 @@ public slots:
     /// FETCH uid BODY[TEXT] — lädt den Text-Inhalt einer Nachricht.
     void nachrichtInhaltAbrufen(int uid);
 
+    /// STORE uid +FLAGS (\Deleted) — markiert Nachricht als gelöscht.
+    void nachrichtLoeschen(int uid);
+
+    /// EXPUNGE — löscht alle als \Deleted markierten Nachrichten endgültig.
+    void ordnerBereinigen();
+
 signals:
     void verbunden();
     void getrennt();
@@ -49,6 +55,8 @@ signals:
     void nachrichtHeaderEmpfangen(const Kern::Nachricht &nachricht);
     void nachrichtenHeaderFertig();
     void nachrichtInhaltEmpfangen(int uid, const QString &inhalt);
+    void nachrichtGeloescht();
+    void ordnerBereinigt();
     void fehlerAufgetreten(const QString &meldung);
 
 private slots:
@@ -92,6 +100,8 @@ private:
         OrdnerAuswaehlen,
         NachrichtenHeader,
         NachrichtenInhalt,
+        NachrichtLoeschen,
+        OrdnerBereinigen,
         Logout
     };
     Befehl m_aktuellerBefehl = Befehl::Keiner;

@@ -169,6 +169,26 @@ void ImapVerbindung::nachrichtInhaltAbrufen(int uid)
     sendeBefehl("FETCH " + QByteArray::number(uid) + " BODY[TEXT]");
 }
 
+void ImapVerbindung::nachrichtLoeschen(int uid)
+{
+    if (!m_angemeldet) {
+        emit fehlerAufgetreten("Nicht angemeldet");
+        return;
+    }
+    m_aktuellerBefehl = Befehl::NachrichtLoeschen;
+    sendeBefehl("STORE " + QByteArray::number(uid) + " +FLAGS (\\Deleted)");
+}
+
+void ImapVerbindung::ordnerBereinigen()
+{
+    if (!m_angemeldet) {
+        emit fehlerAufgetreten("Nicht angemeldet");
+        return;
+    }
+    m_aktuellerBefehl = Befehl::OrdnerBereinigen;
+    sendeBefehl("EXPUNGE");
+}
+
 // ---------------------------------------------------------------------------
 // IMAP-Protokoll-Helfer
 // ---------------------------------------------------------------------------
@@ -323,6 +343,14 @@ void ImapVerbindung::verarbeiteStatusZeile(const QByteArray &zeile)
 
     case Befehl::NachrichtenInhalt:
         // Inhalt wurde über fetchPuffer gesammelt und bereits emittiert
+        break;
+
+    case Befehl::NachrichtLoeschen:
+        emit nachrichtGeloescht();
+        break;
+
+    case Befehl::OrdnerBereinigen:
+        emit ordnerBereinigt();
         break;
 
     case Befehl::Logout:

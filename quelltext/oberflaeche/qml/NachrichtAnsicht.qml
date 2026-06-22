@@ -50,6 +50,13 @@ Rectangle {
                     nachrichtAnsichtModell.inhalt)
             }
         }
+        Button {
+            text: "Löschen"
+            visible: nachrichtAnsichtModell.hatNachricht
+            onClicked: {
+                // TODO: IMAP STORE +FLAGS (\Deleted)
+            }
+        }
 
         // Nachrichteninhalt
         Text {
