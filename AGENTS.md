@@ -85,14 +85,14 @@ Fehlermeldungen zeigen exakte Datei und Zeile.
 
 ✅ Projektgerüst vollständig.
 ✅ Alle Stub-Header und -Implementierungen existieren.
-✅ **Erster Build erfolgreich** — `bau/quelltext/anwendung/adlermail` (2,4 MB, Sanitizer aktiv).
+✅ **Erster Build erfolgreich** — `bau/quelltext/anwendung/adlermail` (2,4 MB).
+✅ **Datenbank-Klasse fertig** — öffnen/schließen, Konto-CRUD.
+✅ **8 Tests grün** (tst_datenbank), Sanitizer aktiv.
 ✅ Pre-Commit-Hook aktiv (Formatierung + Bau + Tests).
 
-⚠ Qt 6.4.2 installiert (System-Paket). `loadFromModule` erst ab Qt 6.5 —
-   daher verwendet `main.cpp` `load(QUrl("qrc:/AdlerMail/HauptFenster.qml"))`.
-
-⚠ Deutsche Qt-Aliase (`signale`, `oeffentlicheSlots`) in `bibliothek/kern/qt_alias.h` —
-   MUSS vor jedem Qt-Include eingebunden werden, siehe `KONVENTIONEN.md`.
+⚠ Qt 6.4.2 installiert (System-Paket). `loadFromModule` erst ab Qt 6.5.
+⚠ Qt-Schlüsselwörter (`signals`, `public slots`, `private slots`) bleiben englisch —
+   MOC erkennt keine `#define`-Aliase. Alles andere ist deutsch (Klassen, Methoden, Variablen).
 
 ## Was als Nächstes
 
