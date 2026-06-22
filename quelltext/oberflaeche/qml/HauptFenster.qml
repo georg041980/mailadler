@@ -9,94 +9,155 @@ ApplicationWindow {
     height: 700
     visible: true
 
-    RowLayout {
+    // Fehler-Dialog
+    property string letzterFehler: ""
+
+    Connections {
+        target: postfachDienst
+        function onFehlerAufgetreten(meldung) {
+            letzterFehler = meldung
+            fehlerDialog.open()
+        }
+    }
+
+    Dialog {
+        id: fehlerDialog
+        title: "Fehler"
+        anchors.centerIn: parent
+        Text { text: letzterFehler; wrapMode: Text.WordWrap; width: 300 }
+        standardButtons: Dialog.Ok
+    }
+
+    ColumnLayout {
         anchors.fill: parent
         spacing: 0
 
-        // --- Ordnerleiste (links) ---
+        // --- Statusleiste ---
         Rectangle {
-            Layout.preferredWidth: 180
-            Layout.fillHeight: true
-            color: "#f5f5f5"
-            border.color: "#ddd"
+            Layout.fillWidth: true
+            Layout.preferredHeight: 24
+            color: "#e8e8e8"
+            border.color: "#ccc"
 
-            ColumnLayout {
+            RowLayout {
                 anchors.fill: parent
                 anchors.margins: 4
-                spacing: 2
-
                 Text {
-                    text: "Ordner"
-                    font.pixelSize: 12
-                    font.bold: true
-                    color: "#888"
-                    Layout.margins: 4
+                    text: "Verbunden · " + ordnerListeModell.rowCount() + " Ordner · "
+                          + nachrichtenListeModell.rowCount() + " Nachrichten"
+                    font.pixelSize: 11
+                    color: "#666"
                 }
+                Item { Layout.fillWidth: true }
+                BusyIndicator {
+                    id: spinner
+                    running: false
+                    Layout.preferredWidth: 16
+                    Layout.preferredHeight: 16
+                    visible: running
+                }
+            }
+        }
 
-                ListView {
-                    id: ordnerListe
-                    Layout.fillWidth: true
-                    Layout.fillHeight: true
-                    model: ordnerListeModell
-                    delegate: Text {
-                        text: model.display
-                        font.pixelSize: 13
-                        padding: 6
-                        color: "#333"
-                        width: ListView.view.width
+        // --- Hauptbereich ---
+        RowLayout {
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+            spacing: 0
 
-                        MouseArea {
-                            anchors.fill: parent
-                            onClicked: {
-                                postfachDienst.nachrichtenLaden(model.display)
+            // Ordnerleiste
+            Rectangle {
+                Layout.preferredWidth: 180
+                Layout.fillHeight: true
+                color: "#f5f5f5"
+                border.color: "#ddd"
+
+                ColumnLayout {
+                    anchors.fill: parent
+                    anchors.margins: 4
+                    spacing: 2
+
+                    Text {
+                        text: "Ordner"
+                        font.pixelSize: 12
+                        font.bold: true
+                        color: "#888"
+                        Layout.margins: 4
+                    }
+
+                    ListView {
+                        id: ordnerListe
+                        Layout.fillWidth: true
+                        Layout.fillHeight: true
+                        model: ordnerListeModell
+                        delegate: Text {
+                            text: model.display
+                            font.pixelSize: 13
+                            padding: 6
+                            color: "#333"
+                            width: ListView.view.width
+                            MouseArea {
+                                anchors.fill: parent
+                                onClicked: {
+                                    spinner.running = true
+                                    postfachDienst.nachrichtenLaden(model.display)
+                                }
                             }
                         }
                     }
                 }
             }
-        }
 
-        // --- Mittlere Spalte: Nachrichtenliste ---
-        ColumnLayout {
-            Layout.preferredWidth: 350
-            Layout.fillHeight: true
-            spacing: 0
+            // Mittlere Spalte: Nachrichtenliste
+            ColumnLayout {
+                Layout.preferredWidth: 350
+                Layout.fillHeight: true
+                spacing: 0
 
-            // Toolbar
-            Rectangle {
-                Layout.fillWidth: true
-                Layout.preferredHeight: 36
-                color: "#fafafa"
-                border.color: "#ddd"
+                Rectangle {
+                    Layout.fillWidth: true
+                    Layout.preferredHeight: 36
+                    color: "#fafafa"
+                    border.color: "#ddd"
 
-                RowLayout {
-                    anchors.fill: parent
-                    anchors.margins: 4
-                    Text {
-                        text: "Posteingang"
-                        font.pixelSize: 14
-                        font.bold: true
-                        Layout.fillWidth: true
+                    RowLayout {
+                        anchors.fill: parent
+                        anchors.margins: 4
+                        Text {
+                            text: "Posteingang"
+                            font.pixelSize: 14
+                            font.bold: true
+                            Layout.fillWidth: true
+                        }
+                        Button {
+                            text: "↻"
+                            font.pixelSize: 16
+                            onClicked: {
+                                spinner.running = true
+                                postfachDienst.ordnerLaden()
+                            }
+                        }
                     }
-                    Button {
-                        text: "↻"
-                        font.pixelSize: 16
-                        onClicked: { /* Aktualisieren (Task 15) */ }
-                    }
+                }
+
+                NachrichtenListe {
+                    Layout.fillWidth: true
+                    Layout.fillHeight: true
                 }
             }
 
-            // Nachrichtenliste
-            NachrichtenListe {
+            // Rechte Spalte: Nachricht-Ansicht
+            NachrichtAnsicht {
                 Layout.fillWidth: true
                 Layout.fillHeight: true
             }
         }
+    }
 
-        // --- Rechte Spalte: Nachricht-Ansicht ---
-        NachrichtAnsicht {
-            Layout.fillWidth: true
-            Layout.fillHeight: true
-        }
+    // Spinner aus nach Laden
+    Connections {
+        target: postfachDienst
+        function onNachrichtenGeaendert() { spinner.running = false }
+        function onOrdnerListeGeaendert()   { spinner.running = false }
     }
 }
