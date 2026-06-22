@@ -48,9 +48,6 @@ Jeder Header folgt dieser Reihenfolge:
 ```cpp
 #pragma once                                      // kein #ifndef-Salat
 
-// 0. qt_alias.h — DEUTSCHE QT-ALIASE (MUSS vor Qt-Includes!)
-#include "../kern/qt_alias.h"                   // Pfad relativ zur Datei anpassen
-
 // 1. Qt-Includes (alphabetisch)
 #include <QtCore/QObject>
 #include <QtNetwork/QTcpSocket>
@@ -79,18 +76,18 @@ public:
     void verbinden();
     void trennen();
 
-    // --- Signale (MOC braucht englisch "signals", Alias erlaubt "signale:") ---
-signale:
+    // --- Signale (Qt-Schlüsselwort: signals — MOC braucht das englische Original) ---
+signals:
     void verbunden();
     void getrennt();
     void fehlerAufgetreten(const QString &meldung);
 
     // --- Öffentliche Slots ---
-oeffentlicheSlots:
+public slots:
     void anmelden(const QString &benutzer, const QString &passwort);
 
     // --- Private Slots ---
-privateSlots:
+private slots:
     void beiVerbunden();
     void beiBereitZumLesen();
 

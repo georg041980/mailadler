@@ -1,5 +1,4 @@
 #pragma once
-#include "../kern/qt_alias.h"
 #include "nachricht.h"
 #include <QtCore/QObject>
 #include <QtCore/QString>
@@ -22,7 +21,7 @@ public:
     int nachrichtenZaehler() const;
     QVector<Nachricht> nachrichten() const;
 
-signale:
+signals:
     void nameGeaendert();
     void nachrichtenGeaendert();
 

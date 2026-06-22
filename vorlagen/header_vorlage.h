@@ -5,18 +5,15 @@
 // ---------------------------------------------------------------------------
 // KOPIERE diese Datei als Ausgangspunkt für neue Header.
 // Passe Folgendes an:
-//   1. Include-Guard: $HEADERNAME_H$  →  tatsächlicher Name
-//   2. Namespace:      $NAMESPACE$    →  AdlerMail::Kern / Protokoll / ...
-//   3. Klassenname:    $KLASSENNAME$  →  PascalCase, deutsch
-//   4. Basisklasse:    $BASISKLASSE$  →  QObject oder andere
-//   5. Vorlagenname:   $VORLAGE$      →  Name dieser Vorlage, unten entfernen
+//   1. Namespace:      $NAMESPACE$    →  AdlerMail::Kern / Protokoll / ...
+//   2. Klassenname:    $KLASSENNAME$  →  PascalCase, deutsch
+//   3. Basisklasse:    $BASISKLASSE$  →  QObject oder andere
+//   4. Vorlagenname:   $VORLAGE$      →  Name dieser Vorlage, unten entfernen
 // ---------------------------------------------------------------------------
 
-// $VORLAGE$: Vorlagen-Header — ersetzt diese Zeile durch echte Includes.
-// Pfad zu qt_alias.h anpassen (z.B. "../kern/qt_alias.h" für protokoll/)
-#include "../kern/qt_alias.h"
-
 #include <QtCore/QObject>
+
+// $VORLAGE$: Vorlagen-Header — ersetzt diese Zeile durch echte Includes.
 
 namespace AdlerMail {
 namespace $NAMESPACE$ {
@@ -44,18 +41,18 @@ public:
     ~$KLASSENNAME$() override;
 
     // --- Signale ------------------------------------------------------------
-signale:
+signals:
     // Beispiel:
     // void fertig();
     // void fehlerAufgetreten(const QString &meldung);
 
     // --- Öffentliche Slots --------------------------------------------------
-oeffentlicheSlots:
+public slots:
     // Beispiel:
     // void starten();
 
     // --- Private Slots ------------------------------------------------------
-privateSlots:
+private slots:
     // Beispiel:
     // void beiFertig();
 

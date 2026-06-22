@@ -1,5 +1,4 @@
 #pragma once
-#include "../kern/qt_alias.h"
 #include "../kern/nachricht.h"
 #include <QtCore/QObject>
 #include <QtCore/QVector>

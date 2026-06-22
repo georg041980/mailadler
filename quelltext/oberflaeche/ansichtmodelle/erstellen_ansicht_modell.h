@@ -1,5 +1,4 @@
 #pragma once
-#include "../../bibliothek/kern/qt_alias.h"
 #include <QtCore/QObject>
 #include <QtCore/QString>
 
@@ -26,7 +25,7 @@ public:
 
     bool kannSenden() const;
 
-signale:
+signals:
     void anGeaendert();
     void betreffGeaendert();
     void inhaltGeaendert();

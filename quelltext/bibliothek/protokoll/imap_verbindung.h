@@ -1,5 +1,4 @@
 #pragma once
-#include "../kern/qt_alias.h"
 #include <QtCore/QObject>
 #include <QtCore/QString>
 #include <QtCore/QStringList>
@@ -20,18 +19,18 @@ public:
     void verbinden();
     void trennen();
 
-oeffentlicheSlots:
+public slots:
     void anmelden(const QString &benutzer, const QString &passwort);
     void ordnerListeAbrufen();
 
-signale:
+signals:
     void verbunden();
     void getrennt();
     void angemeldet();
     void ordnerListeEmpfangen(const QStringList &ordner);
     void fehlerAufgetreten(const QString &meldung);
 
-privateSlots:
+private slots:
     void beiVerbunden();
     void beiBereitZumLesen();
 

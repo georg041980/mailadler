@@ -1,5 +1,4 @@
 #pragma once
-#include "../kern/qt_alias.h"
 #include <QtCore/QObject>
 #include <QtCore/QString>
 #include <QtCore/QStringList>
@@ -15,11 +14,11 @@ public:
     void setzeServer(const QString &server);
     void setzePort(quint16 port);
 
-oeffentlicheSlots:
+public slots:
     void sende(const QString &absender, const QStringList &empfaenger,
                const QString &betreff, const QString &inhalt);
 
-signale:
+signals:
     void gesendet();
     void fehlerAufgetreten(const QString &meldung);
 

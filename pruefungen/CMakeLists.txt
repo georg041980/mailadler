@@ -1,5 +1,4 @@
 # Prüfungen — nur aktiv, wenn BUILD_TESTING=ON
-enable_testing()
 
 find_package(Qt6 REQUIRED COMPONENTS Test)
 
@@ -15,7 +14,7 @@ macro(adlermail_pruefung_hinzufuegen name)
 endmacro()
 
 # Tests (auskommentiert, bis erste Testdatei existiert)
-# adlermail_pruefung_hinzufuegen(tst_datenbank)
+adlermail_pruefung_hinzufuegen(tst_datenbank)
 # adlermail_pruefung_hinzufuegen(tst_imap_verbindung)
 # adlermail_pruefung_hinzufuegen(tst_smtp_verbindung)
 # adlermail_pruefung_hinzufuegen(tst_konto_dienst)

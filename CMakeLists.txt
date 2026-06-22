@@ -40,4 +40,5 @@ qt6_add_translation(uebersetzungen
 
 # Unterverzeichnisse
 add_subdirectory(quelltext)
-# add_subdirectory(pruefungen)  # aktivieren, wenn erste Tests vorhanden
+enable_testing()
+add_subdirectory(pruefungen)
