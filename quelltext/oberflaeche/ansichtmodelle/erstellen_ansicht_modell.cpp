@@ -9,6 +9,11 @@ void ErstellenAnsichtModell::setzeAn(const QString &an) {
     if (m_an != an) { m_an = an; emit anGeaendert(); aktualisiereKannSenden(); }
 }
 
+QString ErstellenAnsichtModell::cc() const { return m_cc; }
+void ErstellenAnsichtModell::setzeCc(const QString &cc) {
+    if (m_cc != cc) { m_cc = cc; emit ccGeaendert(); }
+}
+
 QString ErstellenAnsichtModell::betreff() const { return m_betreff; }
 void ErstellenAnsichtModell::setzeBetreff(const QString &betreff) {
     if (m_betreff != betreff) { m_betreff = betreff; emit betreffGeaendert(); aktualisiereKannSenden(); }

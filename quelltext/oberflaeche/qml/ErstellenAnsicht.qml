@@ -22,6 +22,15 @@ Rectangle {
             }
         }
         RowLayout {
+            Text { text: "CC:"; Layout.preferredWidth: 60 }
+            TextField {
+                Layout.fillWidth: true
+                placeholderText: "kopie@beispiel.de"
+                text: erstellenAnsichtModell.cc
+                onTextChanged: erstellenAnsichtModell.cc = text
+            }
+        }
+        RowLayout {
             Text { text: "Betreff:"; Layout.preferredWidth: 60 }
             TextField {
                 Layout.fillWidth: true
