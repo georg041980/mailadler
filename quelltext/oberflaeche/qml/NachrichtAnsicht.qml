@@ -30,11 +30,25 @@ Rectangle {
         Rectangle { Layout.preferredHeight: 1; Layout.fillWidth: true; color: "#ddd" }
 
         Text {
-            text: nachrichtAnsichtModell.inhalt
+            text: nachrichtAnsichtModell.istHtml
+                  ? formatRichText(nachrichtAnsichtModell.inhalt)
+                  : nachrichtAnsichtModell.inhalt
+            textFormat: nachrichtAnsichtModell.istHtml ? Text.RichText : Text.PlainText
             Layout.fillWidth: true
             Layout.fillHeight: true
             font.pixelSize: 14
             wrapMode: Text.WordWrap
+
+            function formatRichText(html) {
+                // Simpler HTML-Cleanup: body-Extrakt
+                var b = html.indexOf("<body")
+                if (b >= 0) {
+                    var start = html.indexOf(">", b) + 1
+                    var end = html.indexOf("</body>", start)
+                    if (end > start) return html.substring(start, end)
+                }
+                return html
+            }
         }
     }
 }

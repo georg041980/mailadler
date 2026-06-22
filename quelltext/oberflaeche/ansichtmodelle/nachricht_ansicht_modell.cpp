@@ -12,6 +12,7 @@ QString NachrichtAnsichtModell::datum()    const {
     return m_nachricht.datum.toString("dd.MM.yyyy hh:mm");
 }
 bool NachrichtAnsichtModell::hatNachricht() const { return m_hatNachricht; }
+bool NachrichtAnsichtModell::istHtml() const { return !m_nachricht.inhaltHtml.isEmpty(); }
 
 void NachrichtAnsichtModell::setzeNachricht(const Kern::Nachricht &nachricht)
 {

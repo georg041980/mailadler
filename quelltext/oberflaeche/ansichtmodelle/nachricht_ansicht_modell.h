@@ -18,6 +18,7 @@ class NachrichtAnsichtModell : public QObject {
     Q_PROPERTY(QString inhalt   READ inhalt   NOTIFY nachrichtGeaendert)
     Q_PROPERTY(QString datum    READ datum    NOTIFY nachrichtGeaendert)
     Q_PROPERTY(bool hatNachricht READ hatNachricht NOTIFY nachrichtGeaendert)
+    Q_PROPERTY(bool istHtml READ istHtml NOTIFY nachrichtGeaendert)
 
 public:
     explicit NachrichtAnsichtModell(QObject *eltern = nullptr);
@@ -27,6 +28,7 @@ public:
     QString inhalt() const;
     QString datum() const;
     bool hatNachricht() const;
+    bool istHtml() const;
 
     void setzeNachricht(const Kern::Nachricht &nachricht);
     void leeren();
