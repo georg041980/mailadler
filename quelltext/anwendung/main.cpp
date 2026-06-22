@@ -1,6 +1,8 @@
 // AdlerMail — Einstiegspunkt
 #include <QtCore/QDateTime>
+#include <QtCore/QDir>
 #include <QtCore/QObject>
+#include <QtCore/QStandardPaths>
 #include <QtCore/QUrl>
 #include <QtCore/QVector>
 #include <QtGui/QGuiApplication>
@@ -11,19 +13,27 @@
 #include "ansichtmodelle/erstellen_ansicht_modell.h"
 #include "ansichtmodelle/ordner_liste_modell.h"
 #include "ansichtmodelle/nachricht_ansicht_modell.h"
+#include "ansichtmodelle/konto_ansicht_modell.h"
 #include "kern/nachricht.h"
 #include "dienst/postfach_dienst.h"
+#include "dienst/konto_dienst.h"
 #include "speicher/zwischenspeicher.h"
+#include "speicher/datenbank.h"
 #include "protokoll/smtp_verbindung.h"
+#include "protokoll/imap_verbindung.h"
 
 using AdlerMail::NachrichtenListeModell;
 using AdlerMail::ErstellenAnsichtModell;
 using AdlerMail::OrdnerListeModell;
 using AdlerMail::NachrichtAnsichtModell;
+using AdlerMail::KontoAnsichtModell;
 using AdlerMail::Kern::Nachricht;
 using AdlerMail::Dienst::PostfachDienst;
+using AdlerMail::Dienst::KontoDienst;
 using AdlerMail::Speicher::Zwischenspeicher;
+using AdlerMail::Speicher::Datenbank;
 using AdlerMail::Protokoll::SmtpVerbindung;
+using AdlerMail::Protokoll::ImapVerbindung;
 
 int main(int anzahlArgumente, char *argumente[])
 {
@@ -31,6 +41,20 @@ int main(int anzahlArgumente, char *argumente[])
     anwendung.setApplicationName("AdlerMail");
     anwendung.setApplicationVersion("0.1.0");
     anwendung.setOrganizationName("AdlerMail");
+
+    // --- Datenbank ---
+
+    auto datenpfad = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation);
+    QDir().mkpath(datenpfad);
+    auto *datenbank = new Datenbank(&anwendung);
+    datenbank->oeffne(datenpfad + "/adlermail.db");
+
+    // --- Dienste ---
+
+    auto *kontoDienst = new KontoDienst(datenbank, &anwendung);
+    auto *cache = new Zwischenspeicher(&anwendung);
+    auto *postfachDienst = new PostfachDienst(cache, &anwendung);
+    postfachDienst->setzeDatenbank(datenbank);
 
     // --- ViewModels ---
 
@@ -54,31 +78,60 @@ int main(int anzahlArgumente, char *argumente[])
     nachrichtenModell->setzeNachrichten(testDaten);
 
     auto *erstellenModell = new ErstellenAnsichtModell(&anwendung);
-
     auto *ordnerModell = new OrdnerListeModell(&anwendung);
     ordnerModell->setzeOrdner({"INBOX", "Gesendet", "Entwürfe", "Papierkorb"});
-
     auto *nachrichtAnsichtModell = new NachrichtAnsichtModell(&anwendung);
     nachrichtAnsichtModell->setzeNachricht(testDaten[0]);
 
-    // --- Dienste ---
+    auto *kontoAnsichtModell = new KontoAnsichtModell(&anwendung);
 
-    auto *cache = new Zwischenspeicher(&anwendung);
-    auto *postfachDienst = new PostfachDienst(cache, &anwendung);
+    // --- Verdrahtung ---
 
     QObject::connect(postfachDienst, &PostfachDienst::ordnerListeGeaendert,
             ordnerModell, &OrdnerListeModell::setzeOrdner);
 
-    // --- SMTP (wird bei Klick auf „Senden“ genutzt) ---
+    QObject::connect(kontoAnsichtModell, &KontoAnsichtModell::speichernAngefordert,
+            kontoDienst, [kontoDienst](const AdlerMail::Kern::Konto &k) {
+        kontoDienst->kontoAnlegen(k.email, k.name,
+            k.imapServer, k.imapPort, k.smtpServer, k.smtpPort, k.benutzer, k.passwort);
+    });
 
+    // SMTP
     auto *smtp = new SmtpVerbindung(&anwendung);
     QObject::connect(erstellenModell, &ErstellenAnsichtModell::sendeAngefordert,
             smtp, [smtp, erstellenModell]() {
-        smtp->sende(erstellenModell->an(),
-                    {erstellenModell->an()},
-                    erstellenModell->betreff(),
-                    erstellenModell->inhalt());
+        smtp->sende(erstellenModell->an(), {erstellenModell->an()},
+                    erstellenModell->betreff(), erstellenModell->inhalt());
     });
+
+    // --- Startup: erstes Konto → IMAP verbinden ---
+
+    auto konten = kontoDienst->alleKonten();
+    if (!konten.isEmpty()) {
+        auto &k = konten[0];
+        auto *imap = new ImapVerbindung(&anwendung);
+        imap->setzeServer(k.imapServer);
+        imap->setzePort(k.imapPort);
+        postfachDienst->setzeImapVerbindung(imap);
+
+        QObject::connect(imap, &ImapVerbindung::verbunden, imap, [imap, k]() {
+            imap->anmelden(k.benutzer, k.passwort);
+        });
+        QObject::connect(imap, &ImapVerbindung::angemeldet, postfachDienst, [postfachDienst]() {
+            postfachDienst->ordnerLaden();
+        });
+        QObject::connect(postfachDienst, &PostfachDienst::ordnerListeGeaendert,
+                postfachDienst, [postfachDienst](const QStringList &ordner) {
+            if (!ordner.isEmpty()) postfachDienst->nachrichtenLaden(ordner[0]);
+        });
+        QObject::connect(postfachDienst, &PostfachDienst::nachrichtenGeaendert,
+                nachrichtenModell, [postfachDienst, nachrichtenModell, nachrichtAnsichtModell]() {
+            nachrichtenModell->setzeNachrichten(postfachDienst->nachrichten());
+            nachrichtAnsichtModell->setzeNachricht(postfachDienst->nachrichten().value(0));
+        });
+
+        imap->verbinden();
+    }
 
     // --- QML starten ---
 
@@ -87,11 +140,9 @@ int main(int anzahlArgumente, char *argumente[])
     maschine.rootContext()->setContextProperty("erstellenAnsichtModell", erstellenModell);
     maschine.rootContext()->setContextProperty("ordnerListeModell", ordnerModell);
     maschine.rootContext()->setContextProperty("nachrichtAnsichtModell", nachrichtAnsichtModell);
+    maschine.rootContext()->setContextProperty("kontoAnsichtModell", kontoAnsichtModell);
     maschine.load(QUrl("qrc:/AdlerMail/HauptFenster.qml"));
 
-    if (maschine.rootObjects().isEmpty()) {
-        return -1;
-    }
-
+    if (maschine.rootObjects().isEmpty()) return -1;
     return anwendung.exec();
 }
