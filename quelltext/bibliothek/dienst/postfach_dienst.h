@@ -6,17 +6,11 @@
 
 namespace AdlerMail {
 
-namespace Speicher { class Zwischenspeicher; }
+namespace Speicher { class Zwischenspeicher; class Datenbank; }
 namespace Protokoll { class ImapVerbindung; }
 
 namespace Dienst {
 
-/**
- * High-Level-Dienst für Postfach-Operationen.
- *
- * Hält den Zwischenspeicher aktuell, orchestriert IMAP-Zugriffe
- * und sendet UI-Signale.
- */
 class PostfachDienst : public QObject {
     Q_OBJECT
 public:
@@ -24,6 +18,7 @@ public:
                             QObject *eltern = nullptr);
 
     void setzeImapVerbindung(Protokoll::ImapVerbindung *imap);
+    void setzeDatenbank(Speicher::Datenbank *db);
 
     int anzahl() const;
     QVector<Kern::Nachricht> nachrichten() const;
@@ -31,6 +26,7 @@ public:
 
 public slots:
     void ordnerLaden();
+    void nachrichtenLaden(const QString &ordner);
 
 signals:
     void nachrichtenGeaendert();
@@ -39,11 +35,16 @@ signals:
 
 private slots:
     void beiOrdnerListeEmpfangen(const QStringList &ordner);
+    void beiOrdnerAusgewaehlt(int zaehler);
+    void beiNachrichtHeaderEmpfangen(const Kern::Nachricht &nachricht);
+    void beiNachrichtenHeaderFertig();
     void beiImapFehler(const QString &meldung);
 
 private:
     Speicher::Zwischenspeicher *m_cache = nullptr;
     Protokoll::ImapVerbindung  *m_imap  = nullptr;
+    Speicher::Datenbank        *m_db    = nullptr;
+    QString                     m_aktuellerOrdner;
 };
 
 }} // namespace

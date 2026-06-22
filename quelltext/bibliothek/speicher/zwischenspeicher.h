@@ -11,6 +11,7 @@ public:
     explicit Zwischenspeicher(QObject *eltern = nullptr);
 
     void setze(const QVector<Kern::Nachricht> &nachrichten);
+    void setzeEinzeln(const Kern::Nachricht &n);
     QVector<Kern::Nachricht> alle() const;
     void leeren();
 
