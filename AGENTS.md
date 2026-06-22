@@ -106,7 +106,7 @@ Reihenfolge der Pläne in `.hermes/plans/`:
 3. ✅ `dienste` — KontoDienst, PostfachDienst
 4. ✅ `imap-verbindung` — IMAP/TLS
 5. ✅ `smtp-verbindung` — SMTP/TLS
-6. ⬜ `ui-verdrahtung` — QML + ViewModels
+6. ✅ `ui-verdrahtung` — QML + ViewModels
 7. ⬜ `startup-flow` — DB→Konto→IMAP→Nachrichten
 8. ⬜ `e2e-flatpak` — Integrationstest + Flatpak
 9. ⬜ `windows-build` — Windows + Installer
