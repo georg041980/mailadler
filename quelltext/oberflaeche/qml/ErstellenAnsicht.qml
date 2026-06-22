@@ -59,5 +59,10 @@ Rectangle {
             Layout.alignment: Qt.AlignRight
             onClicked: erstellenAnsichtModell.sendeAnfordern()
         }
+        Button {
+            text: "Entwurf"
+            Layout.alignment: Qt.AlignRight
+            onClicked: erstellenAnsichtModell.entwurfSpeichern()
+        }
     }
 }

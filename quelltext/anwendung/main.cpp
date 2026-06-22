@@ -115,6 +115,17 @@ int main(int anzahlArgumente, char *argumente[])
                     erstellenModell->betreff(), erstellenModell->inhalt());
     });
 
+    QObject::connect(erstellenModell, &ErstellenAnsichtModell::entwurfSpeichernAngefordert,
+            datenbank, [erstellenModell, datenbank]() {
+        AdlerMail::Kern::Nachricht n;
+        n.absender  = "ich@adlermail.de";
+        n.betreff   = erstellenModell->betreff();
+        n.inhalt    = erstellenModell->inhalt();
+        n.datum     = QDateTime::currentDateTime();
+        n.istEntwurf = true;
+        datenbank->nachrichtSpeichern(n);
+    });
+
     // --- Startup: erstes Konto → IMAP verbinden ---
 
     if (!konten.isEmpty()) {

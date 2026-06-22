@@ -19,6 +19,7 @@ struct Nachricht {
     QDateTime datum;
     bool      gelesen       = false;
     bool      hatAnhaenge   = false;
+    bool      istEntwurf    = false;
 };
 
 } // namespace Kern

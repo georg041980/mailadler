@@ -35,4 +35,8 @@ void ErstellenAnsichtModell::sendeAnfordern() {
     if (m_kannSenden) emit sendeAngefordert();
 }
 
+void ErstellenAnsichtModell::entwurfSpeichern() {
+    emit entwurfSpeichernAngefordert();
+}
+
 } // namespace

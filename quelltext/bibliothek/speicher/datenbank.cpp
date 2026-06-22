@@ -115,8 +115,8 @@ qint64 Datenbank::nachrichtSpeichern(const Kern::Nachricht &n)
 {
     QSqlQuery query(m_db);
     query.prepare("INSERT OR REPLACE INTO nachrichten "
-                  "(id, ordner, uid, absender, betreff, inhalt, inhalt_html, datum, gelesen, hat_anhaenge) "
-                  "VALUES (:id, :ordner, :uid, :absender, :betreff, :inhalt, :html, :datum, :gelesen, :anhaenge)");
+                  "(id, ordner, uid, absender, betreff, inhalt, inhalt_html, datum, gelesen, hat_anhaenge, ist_entwurf) "
+                  "VALUES (:id, :ordner, :uid, :absender, :betreff, :inhalt, :html, :datum, :gelesen, :anhaenge, :entwurf)");
     query.bindValue(":id", n.id > 0 ? n.id : QVariant());
     query.bindValue(":ordner", "INBOX");
     query.bindValue(":uid", n.id);
@@ -127,6 +127,7 @@ qint64 Datenbank::nachrichtSpeichern(const Kern::Nachricht &n)
     query.bindValue(":datum", n.datum.toString(Qt::ISODate));
     query.bindValue(":gelesen", n.gelesen ? 1 : 0);
     query.bindValue(":anhaenge", n.hatAnhaenge ? 1 : 0);
+    query.bindValue(":entwurf",  n.istEntwurf  ? 1 : 0);
 
     if (!query.exec()) {
         emit fehlerAufgetreten(query.lastError().text());
@@ -196,7 +197,8 @@ void Datenbank::erzeugeTabellen() {
                "inhalt TEXT, inhalt_html TEXT,"
                "datum TEXT,"
                "gelesen INTEGER DEFAULT 0,"
-               "hat_anhaenge INTEGER DEFAULT 0)");
+               "hat_anhaenge INTEGER DEFAULT 0,"
+               "ist_entwurf INTEGER DEFAULT 0)");
 }
 
 }} // namespace

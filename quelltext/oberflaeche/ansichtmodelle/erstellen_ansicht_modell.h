@@ -16,6 +16,7 @@ public:
     explicit ErstellenAnsichtModell(QObject *eltern = nullptr);
 
     Q_INVOKABLE void sendeAnfordern();
+    Q_INVOKABLE void entwurfSpeichern();
 
     QString an() const;
     void setzeAn(const QString &an);
@@ -38,6 +39,7 @@ signals:
     void inhaltGeaendert();
     void kannSendenGeaendert();
     void sendeAngefordert();
+    void entwurfSpeichernAngefordert();
 
 private:
     void aktualisiereKannSenden();
