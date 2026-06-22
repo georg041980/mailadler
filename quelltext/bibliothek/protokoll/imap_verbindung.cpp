@@ -132,6 +132,32 @@ void ImapVerbindung::ordnerListeAbrufen()
     sendeBefehl("LIST \"\" \"*\"");
 }
 
+void ImapVerbindung::ordnerAuswaehlen(const QString &ordnerName)
+{
+    if (!m_angemeldet) {
+        emit fehlerAufgetreten("Nicht angemeldet");
+        return;
+    }
+    m_aktuellerBefehl = Befehl::OrdnerAuswaehlen;
+    sendeBefehl("SELECT \"" + ordnerName.toUtf8() + "\"");
+}
+
+void ImapVerbindung::nachrichtenHeaderAbrufen(int von, int bis)
+{
+    if (!m_angemeldet) {
+        emit fehlerAufgetreten("Nicht angemeldet");
+        return;
+    }
+    if (von < 1 || bis < von) {
+        emit fehlerAufgetreten("Ungültiger Bereich für FETCH");
+        return;
+    }
+    m_aktuellerBefehl = Befehl::NachrichtenHeader;
+    m_fetchPuffer.clear();
+    QByteArray bereich = QByteArray::number(von) + ":" + QByteArray::number(bis);
+    sendeBefehl("FETCH " + bereich + " (FLAGS BODY.PEEK[HEADER.FIELDS (FROM SUBJECT DATE)])");
+}
+
 // ---------------------------------------------------------------------------
 // IMAP-Protokoll-Helfer
 // ---------------------------------------------------------------------------
@@ -178,13 +204,57 @@ void ImapVerbindung::verarbeiteAntwortZeile(const QByteArray &zeile)
         return;
     }
 
-    // Unaufgeforderte Daten: * LIST ..., * EXISTS, * RECENT, * FLAGS, ...
-    if (zeile.startsWith("* ") && m_aktuellerBefehl == Befehl::OrdnerListe) {
-        if (istListeZeile(zeile)) {
+    // Unaufgeforderte Daten: * LIST ..., * EXISTS, * FETCH, ...
+    if (zeile.startsWith("* ")) {
+        if (m_aktuellerBefehl == Befehl::OrdnerListe && istListeZeile(zeile)) {
             QString ordner = parseListeOrdnerName(zeile);
-            if (!ordner.isEmpty()) {
-                m_ordnerListe.append(ordner);
+            if (!ordner.isEmpty()) m_ordnerListe.append(ordner);
+            return;
+        }
+
+        // * 5 EXISTS — während SELECT
+        if (m_aktuellerBefehl == Befehl::OrdnerAuswaehlen && zeile.contains(" EXISTS")) {
+            // Extrahiere Zahl: "* 5 EXISTS"
+            auto leerPos = zeile.indexOf(' ');
+            if (leerPos > 0) {
+                m_letzteExistsZahl = zeile.mid(leerPos + 1, zeile.indexOf(' ', leerPos + 1) - leerPos - 1).toInt();
             }
+            return;
+        }
+
+        // * 1 FETCH (...) — während NachrichtenHeader
+        if (m_aktuellerBefehl == Befehl::NachrichtenHeader && zeile.contains("FETCH")) {
+            if (!m_fetchPuffer.isEmpty()) {
+                auto nachricht = parseFetchZeile(m_fetchPuffer);
+                if (!nachricht.betreff.isEmpty() || !nachricht.absender.isEmpty()) {
+                    emit nachrichtHeaderEmpfangen(nachricht);
+                }
+            }
+            m_fetchPuffer = zeile;
+            // Wenn diese Zeile bereits die schließende ) enthält, direkt parsen
+            if (zeile.trimmed().endsWith(')')) {
+                auto nachricht = parseFetchZeile(m_fetchPuffer);
+                if (!nachricht.betreff.isEmpty() || !nachricht.absender.isEmpty()) {
+                    emit nachrichtHeaderEmpfangen(nachricht);
+                    m_fetchPuffer.clear();
+                }
+                // Sonst: ) gehört nicht zum Header — weiter akkumulieren
+            }
+            return;
+        }
+
+        return; // Andere unaufgeforderte Zeilen ignorieren
+    }
+
+    // Akkumulierte FETCH-Zeilen fortsetzen (nicht *-Zeilen)
+    if (m_aktuellerBefehl == Befehl::NachrichtenHeader && !m_fetchPuffer.isEmpty()) {
+        m_fetchPuffer.append("\r\n" + zeile);
+        if (zeile.trimmed().endsWith(')')) {
+            auto nachricht = parseFetchZeile(m_fetchPuffer);
+            if (!nachricht.betreff.isEmpty() || !nachricht.absender.isEmpty()) {
+                emit nachrichtHeaderEmpfangen(nachricht);
+            }
+            m_fetchPuffer.clear();
         }
         return;
     }
@@ -232,6 +302,14 @@ void ImapVerbindung::verarbeiteStatusZeile(const QByteArray &zeile)
         emit ordnerListeEmpfangen(m_ordnerListe);
         break;
 
+    case Befehl::OrdnerAuswaehlen:
+        emit ordnerAusgewaehlt(m_letzteExistsZahl);
+        break;
+
+    case Befehl::NachrichtenHeader:
+        emit nachrichtenHeaderFertig();
+        break;
+
     case Befehl::Logout:
         // Nichts tun — Trennung folgt über beiTrennung()
         break;
@@ -251,8 +329,6 @@ bool ImapVerbindung::istListeZeile(const QByteArray &zeile) const
 
 QString ImapVerbindung::parseListeOrdnerName(const QByteArray &zeile) const
 {
-    // Extrahiere den letzten quoted-String aus "* LIST (...) "/" "INBOX""
-    // Suche nach dem letzten '"..."'  Paar.
     auto ende  = zeile.lastIndexOf('"');
     if (ende < 0) return QString();
 
@@ -260,6 +336,50 @@ QString ImapVerbindung::parseListeOrdnerName(const QByteArray &zeile) const
     if (start < 0) return QString();
 
     return QString::fromUtf8(zeile.mid(start + 1, ende - start - 1));
+}
+
+Kern::Nachricht ImapVerbindung::parseFetchZeile(const QByteArray &zeile) const
+{
+    // * 1 FETCH (FLAGS (\Seen) BODY[HEADER.FIELDS (FROM SUBJECT DATE)] {…}
+    // Im Header-Teil: From: absender\r\nSubject: betreff\r\nDate: datum
+    Kern::Nachricht n;
+
+    // Suche nach "From: " im Header
+    auto fromPos = zeile.indexOf("From: ");
+    if (fromPos >= 0) {
+        auto start = fromPos + 6;
+        auto end = zeile.indexOf("\r\n", start);
+        if (end < 0) end = zeile.indexOf('\r', start);
+        if (end < 0) end = zeile.indexOf('\n', start);
+        if (end < 0) end = zeile.length();
+        n.absender = QString::fromUtf8(zeile.mid(start, end - start)).trimmed();
+    }
+
+    // Suche nach "Subject: "
+    auto subPos = zeile.indexOf("Subject: ");
+    if (subPos >= 0) {
+        auto start = subPos + 9;
+        auto end = zeile.indexOf("\r\n", start);
+        if (end < 0) end = zeile.indexOf('\r', start);
+        if (end < 0) end = zeile.indexOf('\n', start);
+        if (end < 0) end = zeile.length();
+        n.betreff = QString::fromUtf8(zeile.mid(start, end - start)).trimmed();
+    }
+
+    // Suche nach "Date: "
+    auto datePos = zeile.indexOf("Date: ");
+    if (datePos >= 0) {
+        auto start = datePos + 6;
+        auto end = zeile.indexOf("\r\n", start);
+        if (end < 0) end = zeile.indexOf('\r', start);
+        if (end < 0) end = zeile.indexOf('\n', start);
+        if (end < 0) end = zeile.length();
+        QString datStr = QString::fromUtf8(zeile.mid(start, end - start)).trimmed();
+        n.datum = QDateTime::fromString(datStr, Qt::RFC2822Date);
+        if (!n.datum.isValid()) n.datum = QDateTime::currentDateTime();
+    }
+
+    return n;
 }
 
 // ---------------------------------------------------------------------------

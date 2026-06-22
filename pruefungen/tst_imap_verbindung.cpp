@@ -95,6 +95,25 @@ private:
             m_clientSocket->write("* BYE Auf Wiedersehen\r\n");
             m_clientSocket->write(tag + " OK LOGOUT\r\n");
             m_clientSocket->disconnectFromHost();
+        } else if (rest.startsWith("SELECT")) {
+            m_clientSocket->write("* 3 EXISTS\r\n");
+            m_clientSocket->write("* 0 RECENT\r\n");
+            m_clientSocket->write("* OK [UIDVALIDITY 1]\r\n");
+            m_clientSocket->write(tag + " OK SELECT completed\r\n");
+        } else if (rest.startsWith("FETCH")) {
+            m_clientSocket->write(
+                "* 1 FETCH (FLAGS (\\Seen)\r\n"
+                "From: max@beispiel.de\r\n"
+                "Subject: Test\r\n"
+                "Date: Mon, 01 Jan 2024 12:00:00 +0000\r\n"
+                ")\r\n");
+            m_clientSocket->write(
+                "* 2 FETCH (FLAGS\r\n"
+                "From: info@qt.io\r\n"
+                "Subject: Qt Update\r\n"
+                "Date: Mon, 02 Jan 2024 08:30:00 +0000\r\n"
+                ")\r\n");
+            m_clientSocket->write(tag + " OK FETCH completed\r\n");
         }
     }
 
@@ -260,6 +279,59 @@ private slots:
         // Zweites verbinden() — sollte ignoriert werden
         verbindung.verbinden();
         QCOMPARE(spion.count(), 1);
+    }
+
+    /// Prüft SELECT — ordnerAuswaehlen liefert EXISTS-Zähler.
+    void sollteOrdnerAuswaehlen()
+    {
+        MockImapServer server;
+        QVERIFY(server.starte(0));
+
+        ImapVerbindung verbindung;
+        verbindung.setzeTls(false);
+        verbindung.setzeServer("127.0.0.1");
+        verbindung.setzePort(server.serverPort());
+
+        QSignalSpy verbunden(&verbindung, &ImapVerbindung::verbunden);
+        QSignalSpy angemeldet(&verbindung, &ImapVerbindung::angemeldet);
+        QSignalSpy gewaehlt(&verbindung, &ImapVerbindung::ordnerAusgewaehlt);
+
+        verbindung.verbinden();
+        QVERIFY(verbunden.wait(3000));
+        verbindung.anmelden("u", "p");
+        QVERIFY(angemeldet.wait(3000));
+
+        verbindung.ordnerAuswaehlen("INBOX");
+        QVERIFY(gewaehlt.wait(3000));
+        QCOMPARE(gewaehlt.count(), 1);
+        QCOMPARE(gewaehlt[0][0].toInt(), 3);
+    }
+
+    /// Prüft FETCH — nachrichtenHeaderAbrufen liefert Header.
+    void sollteNachrichtenHeaderAbrufen()
+    {
+        MockImapServer server;
+        QVERIFY(server.starte(0));
+
+        ImapVerbindung verbindung;
+        verbindung.setzeTls(false);
+        verbindung.setzeServer("127.0.0.1");
+        verbindung.setzePort(server.serverPort());
+
+        QSignalSpy verbunden(&verbindung, &ImapVerbindung::verbunden);
+        QSignalSpy angemeldet(&verbindung, &ImapVerbindung::angemeldet);
+        QSignalSpy header(&verbindung, &ImapVerbindung::nachrichtHeaderEmpfangen);
+        QSignalSpy fertig(&verbindung, &ImapVerbindung::nachrichtenHeaderFertig);
+
+        verbindung.verbinden();
+        QVERIFY(verbunden.wait(3000));
+        verbindung.anmelden("u", "p");
+        QVERIFY(angemeldet.wait(3000));
+
+        verbindung.nachrichtenHeaderAbrufen(1, 2);
+        QVERIFY(fertig.wait(3000));
+        QVERIFY(header.count() >= 1);
+        QCOMPARE(header[0][0].value<AdlerMail::Kern::Nachricht>().absender, "max@beispiel.de");
     }
 };
 

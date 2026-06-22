@@ -5,16 +5,10 @@
 #include <QtCore/QByteArray>
 #include <QtNetwork/QSslSocket>
 
+#include "../kern/nachricht.h"
+
 namespace AdlerMail { namespace Protokoll {
 
-/**
- * Stellt eine IMAP-Verbindung zu einem Mail-Server her.
- *
- * Alle Vorgänge laufen asynchron. Ergebnisse werden über Signale gemeldet.
- * Verwendet QSslSocket für TLS-verschlüsselte Verbindungen.
- *
- * @thread Nicht threadsicher — nur im GUI-Strang verwenden.
- */
 class ImapVerbindung : public QObject {
     Q_OBJECT
 public:
@@ -23,31 +17,34 @@ public:
 
     void setzeServer(const QString &server);
     void setzePort(quint16 port);
-    void setzeTls(bool aktiv);   ///< false = Plain-TCP für Tests
+    void setzeTls(bool aktiv);
     QString server() const;
     quint16 port() const;
     bool istTls() const;
     bool istVerbunden() const;
     bool istAngemeldet() const;
 
-    /// Startet TCP+TLS-Verbindung zum Server.
     void verbinden();
-
-    /// Trennt die Verbindung (sendet LOGOUT, dann disconnect).
     void trennen();
 
 public slots:
-    /// Sendet LOGIN-Kommando. Ergebnis kommt über angemeldet() oder fehlerAufgetreten().
     void anmelden(const QString &benutzer, const QString &passwort);
-
-    /// Sendet LIST "" "*" Kommando. Ergebnis kommt über ordnerListeEmpfangen().
     void ordnerListeAbrufen();
+
+    /// SELECT \"ordner\" — wählt einen Ordner aus.
+    void ordnerAuswaehlen(const QString &ordnerName);
+
+    /// FETCH von:bis (FLAGS BODY.PEEK[HEADER.FIELDS (FROM SUBJECT DATE)])
+    void nachrichtenHeaderAbrufen(int von, int bis);
 
 signals:
     void verbunden();
     void getrennt();
     void angemeldet();
     void ordnerListeEmpfangen(const QStringList &ordner);
+    void ordnerAusgewaehlt(int nachrichtenZaehler);
+    void nachrichtHeaderEmpfangen(const Kern::Nachricht &nachricht);
+    void nachrichtenHeaderFertig();
     void fehlerAufgetreten(const QString &meldung);
 
 private slots:
@@ -59,19 +56,15 @@ private slots:
     void beiSslFehlern(const QList<QSslError> &fehler);
 
 private:
-    /// Sendet ein IMAP-Kommando und gibt den Tag zurück.
     QByteArray sendeBefehl(const QByteArray &befehl);
-
-    /// Verarbeitet eine vollständige IMAP-Antwortzeile.
     void verarbeiteAntwortZeile(const QByteArray &zeile);
-
-    /// Prüft, ob die Zeile eine Statusantwort ist (TAG OK/NO/BAD).
     bool istStatusZeile(const QByteArray &zeile) const;
     void verarbeiteStatusZeile(const QByteArray &zeile);
-
-    /// Prüft, ob die Zeile eine LIST-Antwort enthält.
     bool istListeZeile(const QByteArray &zeile) const;
     QString parseListeOrdnerName(const QByteArray &zeile) const;
+
+    /// Parst eine FETCH-Antwortzeile und befüllt eine Nachricht.
+    Kern::Nachricht parseFetchZeile(const QByteArray &zeile) const;
 
     QSslSocket *m_verbindung = nullptr;
     QString     m_server;
@@ -80,17 +73,20 @@ private:
     bool        m_angemeldet  = false;
     bool        m_willTrennen = false;
 
-    // IMAP-Protokollzustand
     int         m_tagZaehler   = 0;
     QByteArray  m_letzterTag;
-    QByteArray  m_puffer;                // für unvollständige Zeilen
-    QStringList m_ordnerListe;           // während LIST gesammelt
+    QByteArray  m_puffer;
+    QStringList m_ordnerListe;
+    int         m_letzteExistsZahl = 0;
+    QByteArray  m_fetchPuffer;            // akkumuliert mehrzeilige FETCH-Daten
 
     enum class Befehl {
         Keiner,
-        Verbinden,       // Warten auf Begrüßung
+        Verbinden,
         Anmelden,
         OrdnerListe,
+        OrdnerAuswaehlen,
+        NachrichtenHeader,
         Logout
     };
     Befehl m_aktuellerBefehl = Befehl::Keiner;
