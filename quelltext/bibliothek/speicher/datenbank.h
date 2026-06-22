@@ -31,6 +31,9 @@ public:
     bool nachrichtAlsGelesenMarkieren(qint64 id);
     void nachrichtenLoeschenFuerOrdner(const QString &ordner);
 
+    // Suche
+    QVector<Kern::Nachricht> sucheNachrichten(const QString &text) const;
+
 signals:
     void fehlerAufgetreten(const QString &meldung);
 

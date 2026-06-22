@@ -177,6 +177,33 @@ void Datenbank::nachrichtenLoeschenFuerOrdner(const QString &ordner)
     query.exec();
 }
 
+QVector<Kern::Nachricht> Datenbank::sucheNachrichten(const QString &text) const
+{
+    QVector<Kern::Nachricht> ergebnis;
+    QSqlQuery query(m_db);
+    query.prepare("SELECT id, ordner, uid, absender, betreff, inhalt, inhalt_html, "
+                  "datum, gelesen, hat_anhaenge FROM nachrichten "
+                  "WHERE betreff LIKE :t OR absender LIKE :t2 OR inhalt LIKE :t3 "
+                  "ORDER BY datum DESC LIMIT 100");
+    QString muster = "%" + text + "%";
+    query.bindValue(":t", muster);
+    query.bindValue(":t2", muster);
+    query.bindValue(":t3", muster);
+    query.exec();
+
+    while (query.next()) {
+        Kern::Nachricht n;
+        n.id       = query.value(0).toLongLong();
+        n.absender = query.value(3).toString();
+        n.betreff  = query.value(4).toString();
+        n.inhalt   = query.value(5).toString();
+        n.datum    = QDateTime::fromString(query.value(7).toString(), Qt::ISODate);
+        n.gelesen  = query.value(8).toBool();
+        ergebnis.append(n);
+    }
+    return ergebnis;
+}
+
 // ---------------------------------------------------------------------------
 void Datenbank::erzeugeTabellen() {
     QSqlQuery query(m_db);
