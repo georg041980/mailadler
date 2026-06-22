@@ -1,6 +1,6 @@
 app-id: org.adlermail.AdlerMail
 runtime: org.kde.Platform
-runtime-version: '6.7'
+runtime-version: '6.4'
 sdk: org.kde.Sdk
 command: adlermail
 finish-args:
