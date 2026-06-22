@@ -103,7 +103,7 @@ private slots:
         smtp.verbinden();
         QVERIFY(verbunden.wait(3000));
 
-        smtp.sende("von@test.de", {"an@test.de"}, "Betreff", "Inhalt");
+        smtp.sende("von@test.de", {"an@test.de"}, {}, "Betreff", "Inhalt");
         QVERIFY(gesendet.wait(3000));
         QCOMPARE(gesendet.count(), 1);
     }

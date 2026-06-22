@@ -35,7 +35,8 @@ public:
     void verbinden();
 
 public slots:
-    void sende(const QString& absender, const QStringList& empfaenger, const QString& betreff, const QString& inhalt);
+    void sende(const QString& absender, const QStringList& empfaenger, const QStringList& cc, const QString& betreff,
+               const QString& inhalt);
 
 signals:
     void verbunden();
@@ -60,6 +61,8 @@ private:
     bool m_tls = true;
     QByteArray m_puffer;
     QString m_absender, m_empfaenger, m_betreff, m_inhalt;
+    QStringList m_ccListe;
+    int m_ccIndex = 0;
 
     enum class Phase
     {
@@ -71,6 +74,7 @@ private:
         AuthPasswort,
         MailFrom,
         RcptTo,
+        RcptCc,
         Daten,
         InhaltSenden,
         Quit

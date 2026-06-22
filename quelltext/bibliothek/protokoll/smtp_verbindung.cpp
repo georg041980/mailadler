@@ -95,11 +95,13 @@ void SmtpVerbindung::verbinden()
 }
 
 // ---------------------------------------------------------------------------
-void SmtpVerbindung::sende(const QString& absender, const QStringList& empfaenger, const QString& betreff,
-                           const QString& inhalt)
+void SmtpVerbindung::sende(const QString& absender, const QStringList& empfaenger, const QStringList& cc,
+                           const QString& betreff, const QString& inhalt)
 {
     m_absender = absender;
     m_empfaenger = empfaenger.isEmpty() ? QString() : empfaenger[0];
+    m_ccListe = cc;
+    m_ccIndex = 0;
     m_betreff = betreff;
     m_inhalt = inhalt;
 
@@ -203,15 +205,41 @@ void SmtpVerbindung::verarbeiteAntwortZeile(const QByteArray& zeile)
         break;
 
     case Phase::RcptTo:
-        m_phase = Phase::Daten;
-        sendeBefehl("DATA");
+        // Wenn CC-Liste nicht leer, nächsten CC-Empfänger senden
+        if (m_ccIndex < m_ccListe.size())
+        {
+            m_phase = Phase::RcptCc;
+            sendeBefehl("RCPT TO:<" + m_ccListe[m_ccIndex].toUtf8() + ">");
+            m_ccIndex++;
+        }
+        else
+        {
+            m_phase = Phase::Daten;
+            sendeBefehl("DATA");
+        }
+        break;
+
+    case Phase::RcptCc:
+        // Nächster CC oder weiter zu DATA
+        if (m_ccIndex < m_ccListe.size())
+        {
+            sendeBefehl("RCPT TO:<" + m_ccListe[m_ccIndex].toUtf8() + ">");
+            m_ccIndex++;
+        }
+        else
+        {
+            m_phase = Phase::Daten;
+            sendeBefehl("DATA");
+        }
         break;
 
     case Phase::Daten:
         // Server bereit für Inhalt → Nachricht senden
         m_phase = Phase::InhaltSenden;
         m_verbindung->write("Subject: " + m_betreff.toUtf8() + "\r\n" + "From: " + m_absender.toUtf8() + "\r\n" +
-                            "To: " + m_empfaenger.toUtf8() + "\r\n" + "\r\n" + m_inhalt.toUtf8() + "\r\n.\r\n");
+                            "To: " + m_empfaenger.toUtf8() + "\r\n" +
+                            (m_ccListe.isEmpty() ? QByteArray() : "Cc: " + m_ccListe.join(", ").toUtf8() + "\r\n") +
+                            "\r\n" + m_inhalt.toUtf8() + "\r\n.\r\n");
         break;
 
     case Phase::InhaltSenden:

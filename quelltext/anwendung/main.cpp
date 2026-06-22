@@ -111,8 +111,8 @@ int main(int anzahlArgumente, char* argumente[])
     QObject::connect(erstellenModell, &ErstellenAnsichtModell::sendeAngefordert, smtp,
                      [smtp, erstellenModell]()
                      {
-                         smtp->sende(erstellenModell->an(), {erstellenModell->an()}, erstellenModell->betreff(),
-                                     erstellenModell->inhalt());
+                         smtp->sende(erstellenModell->an(), {erstellenModell->an()}, {erstellenModell->cc()},
+                                     erstellenModell->betreff(), erstellenModell->inhalt());
                      });
 
     QObject::connect(erstellenModell, &ErstellenAnsichtModell::entwurfSpeichernAngefordert, datenbank,
