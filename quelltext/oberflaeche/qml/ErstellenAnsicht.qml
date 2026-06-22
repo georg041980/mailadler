@@ -64,5 +64,12 @@ Rectangle {
             Layout.alignment: Qt.AlignRight
             onClicked: erstellenAnsichtModell.entwurfSpeichern()
         }
+
+        Text {
+            text: "Anhänge: " + erstellenAnsichtModell.anhaenge.join(", ")
+            font.pixelSize: 11
+            color: "#888"
+            visible: erstellenAnsichtModell.anhaenge.length > 0
+        }
     }
 }

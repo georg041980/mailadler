@@ -1,4 +1,5 @@
 #include "erstellen_ansicht_modell.h"
+#include <QtCore/QFileInfo>
 
 namespace AdlerMail {
 
@@ -25,11 +26,7 @@ void ErstellenAnsichtModell::setzeInhalt(const QString &inhalt) {
 }
 
 bool ErstellenAnsichtModell::kannSenden() const { return m_kannSenden; }
-
-void ErstellenAnsichtModell::aktualisiereKannSenden() {
-    bool ok = !m_an.isEmpty() && !m_betreff.isEmpty();
-    if (m_kannSenden != ok) { m_kannSenden = ok; emit kannSendenGeaendert(); }
-}
+QStringList ErstellenAnsichtModell::anhaenge() const { return m_anhaenge; }
 
 void ErstellenAnsichtModell::sendeAnfordern() {
     if (m_kannSenden) emit sendeAngefordert();
@@ -43,6 +40,17 @@ void ErstellenAnsichtModell::antwortVorbereiten(const QString &an, const QString
     setzeAn(an);
     setzeBetreff("Re: " + betreff);
     setzeInhalt("\n\n--- Original ---\n" + zitat);
+}
+
+void ErstellenAnsichtModell::anhangHinzufuegen(const QString &pfad) {
+    QFileInfo fi(pfad);
+    m_anhaenge.append(fi.fileName());
+    emit anhaengeGeaendert();
+}
+
+void ErstellenAnsichtModell::aktualisiereKannSenden() {
+    bool ok = !m_an.isEmpty() && !m_betreff.isEmpty();
+    if (m_kannSenden != ok) { m_kannSenden = ok; emit kannSendenGeaendert(); }
 }
 
 } // namespace
