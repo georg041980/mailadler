@@ -41,7 +41,7 @@ int main(int anzahlArgumente, char *argumente[])
 {
     QGuiApplication anwendung(anzahlArgumente, argumente);
     anwendung.setApplicationName("AdlerMail");
-    anwendung.setApplicationVersion("0.1.0");
+    anwendung.setApplicationVersion("1.0.0");
     anwendung.setOrganizationName("AdlerMail");
 
     // --- Datenbank ---

@@ -3,7 +3,7 @@
 cmake_minimum_required(VERSION 3.22)
 
 project(AdlerMail
-    VERSION 0.1.0
+    VERSION 1.0.0
     DESCRIPTION "Plattformübergreifender E-Mail-Client"
     LANGUAGES CXX
 )

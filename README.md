@@ -1,56 +1,46 @@
 # AdlerMail
 
-Plattformübergreifender E-Mail-Client mit Qt6 und QML.
+Plattformübergreifender E-Mail-Client mit Qt 6 und QML.
 
-## Plattformen
+**Status:** v1.0.0 | 6 Tests | 0 Warnungen | C++17
 
-- **Linux** (Flatpak)
-- **Windows** (MSI / Portable)
-- später: macOS, Android, iOS
+## Features
 
-## Sprachen
+- **IMAP:** Verbinden, Anmelden, Ordnerliste, SELECT, FETCH (Header+Body)
+- **SMTP:** Senden mit TLS/STARTTLS, Authentifizierung
+- **Oberfläche:** 3-Spalten (Ordner | Nachrichten | Detail), QML+C++
+- **Konten:** Anlegen, Bearbeiten, Löschen, Mehrere Konten
+- **Nachrichten:** Suchen, Entwürfe speichern, Antworten, Löschen
+- **Anhänge:** Anzeige (Empfang), Auswahl (Senden)
+- **Sicherheit:** Passwort-Base64, TLS-Zertifikatsprüfung
+- **Sprache:** Deutsch (fest, keine Übersetzungsdateien)
 
-1. Deutsch
-2. Englisch
-3. Spanisch
-→ Weitere Sprachen über Qt Linguist einfach ergänzbar.
-
-## Entwickeln (lokal, schnell)
+## Bauen (lokal)
 
 ```bash
-# Einmaliger Bau + Test
-./pruefen.sh
-
-# Nur Tests wiederholen (nach Code-Änderung)
-./pruefen.sh test
-
-# Datei-Watcher: speichern → automatisch bauen+testen
-./beobachten.sh          # Strg+C zum Beenden
+./pruefen.sh              # Formatierung + Sanitizer-Bau + Tests
+./pruefen.sh schnell      # Ohne Sanitizer, ~1s
+./pruefen.sh test         # Nur Tests
 ```
 
-Kein Push, kein Warten auf CI — alles läuft lokal in <5 Sekunden.
+## Mit echtem Server testen
 
-### Git-Hook (automatisch bei jedem Commit)
+1. App starten: `./bau/quelltext/anwendung/adlermail`
+2. Konto anlegen mit echten Zugangsdaten
+3. App verbindet automatisch beim Start
+
+**Getestet mit:**
+- Gmail (App-Passwort erforderlich)
+- GMX / Web.de
+- Eigener IMAP/SMTP-Server
+
+## Flatpak bauen
 
 ```bash
-cp vorlagen/pre-commit.hook .git/hooks/pre-commit
-chmod +x .git/hooks/pre-commit
-```
-
-Danach läuft `clang-format` + Bau + Tests **automatisch vor jedem Commit**.
-Formatierungsfehler brechen den Commit ab.
-
-## Bauen (manuell)
-
-```bash
-cmake -B bau -DCMAKE_BUILD_TYPE=Debug
-cmake --build bau
-./bau/quelltext/anwendung/adlermail
+flatpak-builder --user --install build-dir verpackung/flatpak/org.adlermail.AdlerMail.yaml
+flatpak run org.adlermail.AdlerMail
 ```
 
 ## Konventionen
 
-Siehe [KONVENTIONEN.md](KONVENTIONEN.md).
-
-Alle Quelldateien sind deutsch (Klassen, Methoden, Variablen, Kommentare).
-C++/Qt-Schlüsselwörter bleiben englisch.
+Siehe [KONVENTIONEN.md](KONVENTIONEN.md). Alle Quelldateien deutsch.
