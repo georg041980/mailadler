@@ -100,7 +100,7 @@ int main(int anzahlArgumente, char* argumente[])
                      [kontoDienst](const AdlerMail::Kern::Konto& k)
                      {
                          kontoDienst->kontoAnlegen(k.email, k.name, k.imapServer, k.imapPort, k.smtpServer, k.smtpPort,
-                                                   k.benutzer, k.passwort);
+                                                   k.benutzer, k.passwort, k.signatur);
                      });
 
     QObject::connect(kontoAnsichtModell, &KontoAnsichtModell::loeschenAngefordert, kontoDienst,

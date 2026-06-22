@@ -26,7 +26,8 @@ public:
     explicit KontoDienst(Speicher::Datenbank* db, QObject* eltern = nullptr);
 
     qint64 kontoAnlegen(const QString& email, const QString& name, const QString& imapServer, quint16 imapPort,
-                        const QString& smtpServer, quint16 smtpPort, const QString& benutzer, const QString& passwort);
+                        const QString& smtpServer, quint16 smtpPort, const QString& benutzer, const QString& passwort,
+                        const QString& signatur);
 
     QVector<Kern::Konto> alleKonten() const;
     bool kontoLoeschen(qint64 id);

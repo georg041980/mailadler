@@ -24,13 +24,13 @@ private slots:
     void sollteKontoAnlegen()
     {
         auto id =
-            m_dienst->kontoAnlegen("max@test.de", "Max", "imap.test.de", 993, "smtp.test.de", 587, "max", "geheim");
+            m_dienst->kontoAnlegen("max@test.de", "Max", "imap.test.de", 993, "smtp.test.de", 587, "max", "geheim", "");
         QVERIFY(id > 0);
     }
 
     void sollteAlleKontenLiefern()
     {
-        m_dienst->kontoAnlegen("zwei@test.de", "", "imap2.de", 993, "smtp2.de", 587, "zwei", "pw");
+        m_dienst->kontoAnlegen("zwei@test.de", "", "imap2.de", 993, "smtp2.de", 587, "zwei", "pw", "");
         auto konten = m_dienst->alleKonten();
         QVERIFY(konten.size() >= 2);
     }
@@ -44,15 +44,15 @@ private slots:
 
     void sollteDoppelteEmailAblehnen()
     {
-        m_dienst->kontoAnlegen("unique@test.de", "", "imap", 993, "smtp", 587, "u", "p");
-        auto id = m_dienst->kontoAnlegen("unique@test.de", "", "imap2", 993, "smtp2", 587, "u2", "p2");
+        m_dienst->kontoAnlegen("unique@test.de", "", "imap", 993, "smtp", 587, "u", "p", "");
+        auto id = m_dienst->kontoAnlegen("unique@test.de", "", "imap2", 993, "smtp2", 587, "u2", "p2", "");
         QCOMPARE(id, -1);
     }
 
     void sollteSignaleSenden()
     {
         QSignalSpy spyHinzugefuegt(m_dienst, &KontoDienst::kontoHinzugefuegt);
-        m_dienst->kontoAnlegen("sig@test.de", "", "imap", 993, "smtp", 587, "sig", "pw");
+        m_dienst->kontoAnlegen("sig@test.de", "", "imap", 993, "smtp", 587, "sig", "pw", "");
         QCOMPARE(spyHinzugefuegt.count(), 1);
     }
 

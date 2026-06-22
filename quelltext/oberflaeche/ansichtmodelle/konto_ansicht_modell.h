@@ -18,6 +18,7 @@ class KontoAnsichtModell : public QObject
     Q_PROPERTY(int smtpPort READ smtpPort WRITE setzeSmtpPort NOTIFY datenGeaendert)
     Q_PROPERTY(QString benutzer READ benutzer WRITE setzeBenutzer NOTIFY datenGeaendert)
     Q_PROPERTY(QString passwort READ passwort WRITE setzePasswort NOTIFY datenGeaendert)
+    Q_PROPERTY(QString signatur READ signatur WRITE setzeSignatur NOTIFY datenGeaendert)
     Q_PROPERTY(bool kannSpeichern READ kannSpeichern NOTIFY datenGeaendert)
 
 public:
@@ -41,6 +42,8 @@ public:
     void setzeBenutzer(const QString& b);
     QString passwort() const;
     void setzePasswort(const QString& p);
+    QString signatur() const;
+    void setzeSignatur(const QString& s);
     bool kannSpeichern() const;
 
     Q_INVOKABLE void loeschenAnfordern();
@@ -55,7 +58,7 @@ signals:
 
 private:
     void aktualisiereKannSpeichern();
-    QString m_email, m_name, m_imapServer, m_smtpServer, m_benutzer, m_passwort;
+    QString m_email, m_name, m_imapServer, m_smtpServer, m_benutzer, m_passwort, m_signatur;
     int m_imapPort = 993, m_smtpPort = 587;
     bool m_kannSpeichern = false;
     qint64 m_kontoId = 0;

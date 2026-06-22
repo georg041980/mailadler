@@ -123,6 +123,20 @@ void KontoAnsichtModell::setzePasswort(const QString& p)
     }
 }
 
+QString KontoAnsichtModell::signatur() const
+{
+    return m_signatur;
+}
+
+void KontoAnsichtModell::setzeSignatur(const QString& s)
+{
+    if (m_signatur != s)
+    {
+        m_signatur = s;
+        emit datenGeaendert();
+    }
+}
+
 bool KontoAnsichtModell::kannSpeichern() const
 {
     return m_kannSpeichern;
@@ -151,6 +165,7 @@ void KontoAnsichtModell::ladeKonto(const Kern::Konto& k)
     setzeSmtpPort(k.smtpPort);
     setzeBenutzer(k.benutzer);
     setzePasswort(k.passwort);
+    setzeSignatur(k.signatur);
 }
 
 Kern::Konto KontoAnsichtModell::konto() const
@@ -164,6 +179,7 @@ Kern::Konto KontoAnsichtModell::konto() const
     k.smtpPort = static_cast<quint16>(m_smtpPort);
     k.benutzer = m_benutzer;
     k.passwort = m_passwort;
+    k.signatur = m_signatur;
     k.istAktiv = true;
     return k;
 }

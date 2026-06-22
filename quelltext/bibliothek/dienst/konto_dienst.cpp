@@ -13,7 +13,7 @@ KontoDienst::KontoDienst(Speicher::Datenbank* db, QObject* eltern) : QObject(elt
 
 qint64 KontoDienst::kontoAnlegen(const QString& email, const QString& name, const QString& imapServer, quint16 imapPort,
                                  const QString& smtpServer, quint16 smtpPort, const QString& benutzer,
-                                 const QString& passwort)
+                                 const QString& passwort, const QString& signatur)
 {
     Kern::Konto k;
     k.email = email;
@@ -24,6 +24,7 @@ qint64 KontoDienst::kontoAnlegen(const QString& email, const QString& name, cons
     k.smtpPort = smtpPort;
     k.benutzer = benutzer;
     k.passwort = passwort;
+    k.signatur = signatur;
     k.istAktiv = true;
 
     qint64 id = m_db->kontoSpeichern(k);
