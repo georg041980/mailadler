@@ -85,7 +85,7 @@ Fehlermeldungen zeigen exakte Datei und Zeile.
 
 <!-- AUTO-START -->
 - **Version:** 1.0.0
-- **Tests:** 6 Test-Suiten, 35 Testfälle, alle grün
+- **Tests:** 6 Test-Suiten, 36 Testfälle, alle grün
 - **Build:** CMake+Ninja, Sanitizer (ASan+UBSan) aktiv
 - **Modul-Status:**
   - ✅ kern/
