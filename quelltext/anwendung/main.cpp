@@ -1,4 +1,5 @@
 // AdlerMail — Einstiegspunkt
+#include <QtCore/QUrl>
 #include <QtGui/QGuiApplication>
 #include <QtQml/QQmlApplicationEngine>
 
@@ -10,7 +11,7 @@ int main(int anzahlArgumente, char *argumente[])
     anwendung.setOrganizationName("AdlerMail");
 
     QQmlApplicationEngine maschine;
-    maschine.loadFromModule("AdlerMail", "HauptFenster");
+    maschine.load(QUrl("qrc:/AdlerMail/HauptFenster.qml"));
 
     if (maschine.rootObjects().isEmpty()) {
         return -1;

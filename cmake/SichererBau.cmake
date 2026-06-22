@@ -11,6 +11,7 @@ if(SICHERER_BAU)
 
     # UndefinedBehaviorSanitizer: Null-Pointer, Integer-Überlauf, …
     add_compile_options(-fsanitize=undefined)
+    add_link_options(-fsanitize=undefined)
 
     # Optional: LeakSanitizer (ist in ASan enthalten, aber separat abschaltbar)
     set(ENV{ASAN_OPTIONS} "detect_leaks=1:detect_stack_use_after_return=1")

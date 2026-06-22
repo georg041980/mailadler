@@ -12,9 +12,11 @@
 //   5. Vorlagenname:   $VORLAGE$      →  Name dieser Vorlage, unten entfernen
 // ---------------------------------------------------------------------------
 
-#include <QtCore/QObject>
-
 // $VORLAGE$: Vorlagen-Header — ersetzt diese Zeile durch echte Includes.
+// Pfad zu qt_alias.h anpassen (z.B. "../kern/qt_alias.h" für protokoll/)
+#include "../kern/qt_alias.h"
+
+#include <QtCore/QObject>
 
 namespace AdlerMail {
 namespace $NAMESPACE$ {

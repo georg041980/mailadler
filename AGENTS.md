@@ -83,9 +83,16 @@ Fehlermeldungen zeigen exakte Datei und Zeile.
 
 ## Aktueller Stand
 
-Projektgerüst steht. Alle CMake-Dateien und Konventionen sind definiert.
-Die `.h`/`.cpp`-Stubs für `kern/`, `protokoll/`, `speicher/`, `dienst/`
-müssen noch erstellt werden, damit das Projekt das erste Mal durchbaut.
+✅ Projektgerüst vollständig.
+✅ Alle Stub-Header und -Implementierungen existieren.
+✅ **Erster Build erfolgreich** — `bau/quelltext/anwendung/adlermail` (2,4 MB, Sanitizer aktiv).
+✅ Pre-Commit-Hook aktiv (Formatierung + Bau + Tests).
+
+⚠ Qt 6.4.2 installiert (System-Paket). `loadFromModule` erst ab Qt 6.5 —
+   daher verwendet `main.cpp` `load(QUrl("qrc:/AdlerMail/HauptFenster.qml"))`.
+
+⚠ Deutsche Qt-Aliase (`signale`, `oeffentlicheSlots`) in `bibliothek/kern/qt_alias.h` —
+   MUSS vor jedem Qt-Include eingebunden werden, siehe `KONVENTIONEN.md`.
 
 ## Was als Nächstes
 
