@@ -141,6 +141,7 @@ int main(int anzahlArgumente, char *argumente[])
     maschine.rootContext()->setContextProperty("ordnerListeModell", ordnerModell);
     maschine.rootContext()->setContextProperty("nachrichtAnsichtModell", nachrichtAnsichtModell);
     maschine.rootContext()->setContextProperty("kontoAnsichtModell", kontoAnsichtModell);
+    maschine.rootContext()->setContextProperty("postfachDienst", postfachDienst);
     maschine.load(QUrl("qrc:/AdlerMail/HauptFenster.qml"));
 
     if (maschine.rootObjects().isEmpty()) return -1;
