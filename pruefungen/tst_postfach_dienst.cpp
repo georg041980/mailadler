@@ -149,6 +149,27 @@ private slots:
         QCOMPARE(fehler.count(), 1);
     }
 
+    void sollteVerbindenOrdnerLaden()
+    {
+        MiniImapServer server;
+        QVERIFY(server.starte());
+        ImapVerbindung imap;
+        imap.setzeTls(false);
+
+        PostfachDienst dienst(m_cache);
+        dienst.setzeImapVerbindung(&imap);
+        QSignalSpy verb(&dienst, &PostfachDienst::verbunden);
+        QSignalSpy ordner(&dienst, &PostfachDienst::ordnerListeGeaendert);
+
+        dienst.verbinden("127.0.0.1", server.port(), "u", "p");
+        QVERIFY(verb.wait(3000));
+        QCOMPARE(verb.count(), 1);
+        QVERIFY(ordner.wait(3000));
+        QCOMPARE(ordner.count(), 1);
+        QStringList liste = ordner[0][0].toStringList();
+        QCOMPARE(liste.size(), 2);
+    }
+
     /*
     void sollteNachrichtenLaden() {
         MiniImapServer server;

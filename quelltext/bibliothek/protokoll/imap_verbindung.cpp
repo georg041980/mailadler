@@ -414,7 +414,13 @@ void ImapVerbindung::verarbeiteStatusZeile(const QByteArray& zeile)
         return;
     }
 
-    switch (m_aktuellerBefehl)
+    // Aktuellen Befehl sichern, bevor Signal-Handler ihn ändern (z.B. PostfachDienst::beiImapAngemeldet
+    // ruft ordnerListeAbrufen auf, das m_aktuellerBefehl neu setzt). Sonst überschreibt die Zeile
+    // m_aktuellerBefehl = Keiner nach dem switch den neuen Wert.
+    auto befehl = m_aktuellerBefehl;
+    m_aktuellerBefehl = Befehl::Keiner;
+
+    switch (befehl)
     {
     case Befehl::Anmelden:
         m_angemeldet = true;
@@ -452,8 +458,6 @@ void ImapVerbindung::verarbeiteStatusZeile(const QByteArray& zeile)
     default:
         break;
     }
-
-    m_aktuellerBefehl = Befehl::Keiner;
 }
 
 bool ImapVerbindung::istListeZeile(const QByteArray& zeile) const

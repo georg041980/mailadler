@@ -13,11 +13,44 @@ PostfachDienst::PostfachDienst(Speicher::Zwischenspeicher* cache, QObject* elter
 {
 }
 
+void PostfachDienst::verbinden(const QString& server, quint16 port, const QString& benutzer, const QString& passwort)
+{
+    if (!m_imap)
+    {
+        emit fehlerAufgetreten("Keine IMAP-Verbindung gesetzt");
+        return;
+    }
+    m_credsBenutzer = benutzer;
+    m_credsPasswort = passwort;
+    m_autoLadeOrdner = true;
+    m_imap->setzeServer(server);
+    m_imap->setzePort(port);
+    m_imap->verbinden();
+}
+
+void PostfachDienst::beiImapVerbunden()
+{
+    if (!m_credsBenutzer.isEmpty())
+        m_imap->anmelden(m_credsBenutzer, m_credsPasswort);
+}
+
+void PostfachDienst::beiImapAngemeldet()
+{
+    emit verbunden();
+    if (m_autoLadeOrdner && m_imap)
+    {
+        m_autoLadeOrdner = false;
+        m_imap->ordnerListeAbrufen();
+    }
+}
+
 void PostfachDienst::setzeImapVerbindung(Protokoll::ImapVerbindung* imap)
 {
     m_imap = imap;
     if (m_imap)
     {
+        connect(m_imap, &Protokoll::ImapVerbindung::verbunden, this, &PostfachDienst::beiImapVerbunden);
+        connect(m_imap, &Protokoll::ImapVerbindung::angemeldet, this, &PostfachDienst::beiImapAngemeldet);
         connect(m_imap, &Protokoll::ImapVerbindung::ordnerListeEmpfangen, this,
                 &PostfachDienst::beiOrdnerListeEmpfangen);
         connect(m_imap, &Protokoll::ImapVerbindung::ordnerAusgewaehlt, this, &PostfachDienst::beiOrdnerAusgewaehlt);
