@@ -83,28 +83,26 @@ Fehlermeldungen zeigen exakte Datei und Zeile.
 
 ## Aktueller Stand
 
-✅ Projektgerüst vollständig.
-✅ Alle Stub-Header und -Implementierungen existieren.
-✅ **Erster Build erfolgreich** — `bau/quelltext/anwendung/adlermail` (2,4 MB).
-✅ **Datenbank-Klasse fertig** — öffnen/schließen, Konto-CRUD.
-✅ **8 Tests grün** (tst_datenbank), Sanitizer aktiv.
-✅ Pre-Commit-Hook aktiv (Formatierung + Bau + Tests).
+✅ Projektgerüst vollständig (CMake+Ninja, Sanitizer, clang-format).
+✅ Datenbank: Konto-CRUD + Nachrichten-Tabelle (10 Tests).
+✅ Zwischenspeicher mit setzeEinzeln().
+✅ IMAP: LOGIN, LIST, SELECT+EXISTS, FETCH-Header (mehrzeilig), BODY-API.
+✅ SMTP: EHLO, AUTH, MAIL FROM, RCPT TO, DATA mit echten Parametern.
+✅ QML-Fenster: NachrichtenListe, NachrichtAnsicht, ErstellenAnsicht verdrahtet.
+✅ ViewModels: NachrichtenListeModell, ErstellenAnsichtModell, OrdnerListeModell, NachrichtAnsichtModell.
+✅ Dienste: KontoDienst, PostfachDienst (ordnerLaden, nachrichtenLaden).
+✅ 6 Test-Suiten, alle grün (≈0,2 s).
+✅ CI: GitHub Actions auf ubuntu-24.04 mit Sanitizern.
+✅ Keine Übersetzungsdateien — fest Deutsch.
 
-⚠ Qt 6.4.2 installiert (System-Paket). `loadFromModule` erst ab Qt 6.5.
-⚠ Qt-Schlüsselwörter (`signals`, `public slots`, `private slots`) bleiben englisch —
-   MOC erkennt keine `#define`-Aliase. Alles andere ist deutsch (Klassen, Methoden, Variablen).
+⚠ Qt 6.4.2 (System-Paket). `loadFromModule` erst ab Qt 6.5.
 
 ## Was als Nächstes
 
-Reihenfolge der Implementierungspläne (in `.hermes/plans/`):
-
-1. `datenbank-implementierung` — Datenbank: öffnen, Konten-CRUD
-2. `zwischenspeicher` — RAM-Cache für Nachrichten
-3. `dienste` — KontoDienst + PostfachDienst (Fassade fürs UI)
-4. `imap-verbindung` — Echte IMAP/TLS-Kommunikation
-5. `smtp-verbindung` — Echte SMTP/TLS-Kommunikation
-6. (folgt) `imap-nachrichten` — SELECT + FETCH für Mail-Inhalte
-7. (folgt) `ui-verknuepfung` — ViewModel ← Dienst ← Protokoll
+- Konto-Verwaltung im UI (Dialog, Auswahl)
+- Startup-Flow: Konto wählen → IMAP verbinden → Nachrichten anzeigen
+- nachrichtenLaden-End-to-End-Test reparieren
+- Flatpak-Paketierung
 
 ## Verzeichnisse, die Hermes kennen muss
 
