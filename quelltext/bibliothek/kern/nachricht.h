@@ -3,6 +3,8 @@
 #include <QtCore/QObject>
 #include <QtCore/QString>
 #include <QtCore/QDateTime>
+#include <QtCore/QVector>
+#include "anhang.h"
 
 namespace AdlerMail {
 namespace Kern {

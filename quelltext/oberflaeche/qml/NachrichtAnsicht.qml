@@ -29,6 +29,17 @@ Rectangle {
 
         Rectangle { Layout.preferredHeight: 1; Layout.fillWidth: true; color: "#ddd" }
 
+        // Anhänge
+        Text {
+            text: nachrichtAnsichtModell.anzahlAnhaenge > 0
+                  ? "Anhänge: " + nachrichtAnsichtModell.anhaengeNamen.join(", ")
+                  : ""
+            font.pixelSize: 12
+            color: "#888"
+            visible: nachrichtAnsichtModell.anzahlAnhaenge > 0
+        }
+
+        // Nachrichteninhalt
         Text {
             text: nachrichtAnsichtModell.istHtml
                   ? formatRichText(nachrichtAnsichtModell.inhalt)

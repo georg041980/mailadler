@@ -13,6 +13,8 @@ QString NachrichtAnsichtModell::datum()    const {
 }
 bool NachrichtAnsichtModell::hatNachricht() const { return m_hatNachricht; }
 bool NachrichtAnsichtModell::istHtml() const { return !m_nachricht.inhaltHtml.isEmpty(); }
+int NachrichtAnsichtModell::anzahlAnhaenge() const { return m_anhaengeNamen.size(); }
+QStringList NachrichtAnsichtModell::anhaengeNamen() const { return m_anhaengeNamen; }
 
 void NachrichtAnsichtModell::setzeNachricht(const Kern::Nachricht &nachricht)
 {

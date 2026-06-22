@@ -19,6 +19,8 @@ class NachrichtAnsichtModell : public QObject {
     Q_PROPERTY(QString datum    READ datum    NOTIFY nachrichtGeaendert)
     Q_PROPERTY(bool hatNachricht READ hatNachricht NOTIFY nachrichtGeaendert)
     Q_PROPERTY(bool istHtml READ istHtml NOTIFY nachrichtGeaendert)
+    Q_PROPERTY(int anzahlAnhaenge READ anzahlAnhaenge NOTIFY nachrichtGeaendert)
+    Q_PROPERTY(QStringList anhaengeNamen READ anhaengeNamen NOTIFY nachrichtGeaendert)
 
 public:
     explicit NachrichtAnsichtModell(QObject *eltern = nullptr);
@@ -29,6 +31,8 @@ public:
     QString datum() const;
     bool hatNachricht() const;
     bool istHtml() const;
+    int anzahlAnhaenge() const;
+    QStringList anhaengeNamen() const;
 
     void setzeNachricht(const Kern::Nachricht &nachricht);
     void leeren();
@@ -39,6 +43,7 @@ signals:
 private:
     Kern::Nachricht m_nachricht;
     bool m_hatNachricht = false;
+    QStringList m_anhaengeNamen;
 };
 
 } // namespace
