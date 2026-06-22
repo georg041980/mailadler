@@ -88,10 +88,10 @@ Fehlermeldungen zeigen exakte Datei und Zeile.
 - **Tests:** 6 Test-Suiten, 35 Testfälle, alle grün
 - **Build:** CMake+Ninja, Sanitizer (ASan+UBSan) aktiv
 - **Modul-Status:**
-  - ⚠ kern/  (keine Tests)
-  - ⚠ speicher/  (keine Tests)
-  - ⚠ dienst/  (keine Tests)
-  - ⚠ protokoll/  (keine Tests)
+  - ✅ kern/
+  - ✅ speicher/
+  - ✅ dienst/
+  - ✅ protokoll/
   - ⬜ oberflaeche/ (4 QML)
 <!-- AUTO-ENDE -->
 

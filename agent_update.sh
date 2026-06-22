@@ -28,17 +28,28 @@ fi
 
 [ "$TEST_SUITEN" -eq 0 ] && TEST_SUITEN="?" && TEST_FAELLE="?"
 
-# Modul-Status
+# Modul-Status — prüft ob Tests existieren, die Includes aus dem Modul haben
 build_modul() {
     local dir="$PROJEKT/quelltext/bibliothek/$1"
     local name="$2"
     [ ! -d "$dir" ] && echo "  - ❌ $name" && return
+
     local cpp_count
-    cpp_count=$(find "$dir" -maxdepth 1 -name '*.cpp' ! -name 'moc_*' 2>/dev/null | wc -l)
-    local test_file="$PROJEKT/pruefungen/tst_${1}.cpp"
+    cpp_count=$(find "$dir" -maxdepth 1 -name '*.cpp' 2>/dev/null | wc -l)
+
+    # Prüfe ob IRGENDEIN Test Includes aus diesem Modul hat
+    local hat_tests=false
+    for testfile in "$PROJEKT/pruefungen/tst_"*.cpp; do
+        [ -f "$testfile" ] || continue
+        if grep -q "\"$1/" "$testfile" 2>/dev/null; then
+            hat_tests=true
+            break
+        fi
+    done
+
     if [ "$cpp_count" -eq 0 ]; then
         echo "  - ⬜ $name"
-    elif [ -f "$test_file" ]; then
+    elif $hat_tests; then
         echo "  - ✅ $name"
     else
         echo "  - ⚠ $name  (keine Tests)"
