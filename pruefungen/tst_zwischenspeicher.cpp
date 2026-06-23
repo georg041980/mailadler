@@ -4,8 +4,8 @@
 #include "kern/nachricht.h"
 #include "speicher/zwischenspeicher.h"
 
-using AdlerMail::Kern::Nachricht;
-using AdlerMail::Speicher::Zwischenspeicher;
+using MailAdler::Kern::Nachricht;
+using MailAdler::Speicher::Zwischenspeicher;
 
 class TestZwischenspeicher : public QObject
 {

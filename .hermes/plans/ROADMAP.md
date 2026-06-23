@@ -1,4 +1,4 @@
-# AdlerMail — Roadmap v1.0 → v2.0
+# MailAdler — Roadmap v1.0 → v2.0
 
 > Stand: 22. Juni 2026. Alle Versionen sind Zielbilder, keine Garantien.
 
@@ -52,7 +52,7 @@
 
 ## v1.2 — Alltagstauglich
 
-**Ziel:** Ich benutze AdlerMail täglich statt Thunderbird.
+**Ziel:** Ich benutze MailAdler täglich statt Thunderbird.
 
 | Feature | Details |
 |---|---|
@@ -125,7 +125,7 @@ v2.0 ──── Thunderbird-Ersatz             ⬜
 
 ```
 Neuen Chat öffnen
-  → "Wechsle nach /home/georg/adlermail"
+  → "Wechsle nach /home/georg/mailadler"
   → Hermes liest AGENTS.md (auto-aktualisiert)
   → "Führe Plan .hermes/plans/2026-06-22_ui-verdrahtung.md aus"
   → Bauen + Testen + Committen

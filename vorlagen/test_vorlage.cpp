@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------
-// Vorlage für AdlerMail-Testdateien
+// Vorlage für MailAdler-Testdateien
 // ---------------------------------------------------------------------------
 // KOPIERE diese Datei als Ausgangspunkt für neue Tests.
 // Passe Folgendes an:

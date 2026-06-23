@@ -9,7 +9,7 @@
 
 #include "protokoll/imap_verbindung.h"
 
-using AdlerMail::Protokoll::ImapVerbindung;
+using MailAdler::Protokoll::ImapVerbindung;
 
 /**
  * Mock-IMAP-Server, der vordefinierte Antworten sendet.
@@ -343,7 +343,7 @@ private slots:
         verbindung.nachrichtenHeaderAbrufen(1, 2);
         QVERIFY(fertig.wait(3000));
         QVERIFY(header.count() >= 1);
-        QCOMPARE(header[0][0].value<AdlerMail::Kern::Nachricht>().absender, "max@beispiel.de");
+        QCOMPARE(header[0][0].value<MailAdler::Kern::Nachricht>().absender, "max@beispiel.de");
     }
 };
 

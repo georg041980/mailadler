@@ -39,7 +39,7 @@ Da wir keinen echten IMAP-Server in Tests wollen, mocken wir das Protokoll auf z
 #include <QTcpSocket>
 #include "protokoll/imap_verbindung.h"
 
-using AdlerMail::Protokoll::ImapVerbindung;
+using MailAdler::Protokoll::ImapVerbindung;
 
 // Fake-Socket, der vordefinierte Daten zurückspielt
 class FakeSocket : public QTcpSocket {
@@ -151,7 +151,7 @@ QTEST_MAIN(TestImapVerbindung)
 
 **CMakeLists.txt:**
 ```cmake
-adlermail_pruefung_hinzufuegen(tst_imap_verbindung)
+mailadler_pruefung_hinzufuegen(tst_imap_verbindung)
 ```
 
 ### Aufgabe 2: Implementierung — Zustandsautomat + IMAP-Parsing
@@ -176,7 +176,7 @@ adlermail_pruefung_hinzufuegen(tst_imap_verbindung)
 #include <QtCore/QQueue>
 #include <QtNetwork/QTcpSocket>
 
-namespace AdlerMail { namespace Protokoll {
+namespace MailAdler { namespace Protokoll {
 
 class ImapVerbindung : public QObject {
     Q_OBJECT
@@ -242,7 +242,7 @@ private:
 #include <QtNetwork/QSslSocket>
 #include <QtCore/QRegularExpression>
 
-namespace AdlerMail { namespace Protokoll {
+namespace MailAdler { namespace Protokoll {
 
 // ---------------------------------------------------------------------------
 ImapVerbindung::ImapVerbindung(QObject *eltern) : QObject(eltern) {}

@@ -1,11 +1,11 @@
 #pragma once
 
 // ---------------------------------------------------------------------------
-// Vorlage für AdlerMail-Header-Dateien
+// Vorlage für MailAdler-Header-Dateien
 // ---------------------------------------------------------------------------
 // KOPIERE diese Datei als Ausgangspunkt für neue Header.
 // Passe Folgendes an:
-//   1. Namespace:      $NAMESPACE$    →  AdlerMail::Kern / Protokoll / ...
+//   1. Namespace:      $NAMESPACE$    →  MailAdler::Kern / Protokoll / ...
 //   2. Klassenname:    $KLASSENNAME$  →  PascalCase, deutsch
 //   3. Basisklasse:    $BASISKLASSE$  →  QObject oder andere
 //   4. Vorlagenname:   $VORLAGE$      →  Name dieser Vorlage, unten entfernen
@@ -15,7 +15,7 @@
 
 // $VORLAGE$: Vorlagen-Header — ersetzt diese Zeile durch echte Includes.
 
-namespace AdlerMail {
+namespace MailAdler {
 namespace $NAMESPACE$ {
 
 /**
@@ -62,6 +62,6 @@ private:
 };
 
 } // namespace $NAMESPACE$
-} // namespace AdlerMail
+} // namespace MailAdler
 
 // $VORLAGE$: Ende der Vorlage — diese Zeile vor dem ersten Commit entfernen.

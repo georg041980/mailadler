@@ -1,8 +1,8 @@
-# AdlerMail — Qt6 E-Mail-Client
+# MailAdler — Qt6 E-Mail-Client
 # Build mit: cmake -B bau -DCMAKE_BUILD_TYPE=Debug && cmake --build bau
 cmake_minimum_required(VERSION 3.22)
 
-project(AdlerMail
+project(MailAdler
     VERSION 1.0.0
     DESCRIPTION "Plattformübergreifender E-Mail-Client"
     LANGUAGES CXX

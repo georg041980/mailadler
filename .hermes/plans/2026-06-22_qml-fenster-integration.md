@@ -32,20 +32,20 @@
 #include "ansichtmodelle/nachrichten_liste_modell.h"
 #include "kern/nachricht.h"
 
-using AdlerMail::NachrichtenListeModell;
-using AdlerMail::Kern::Nachricht;
+using MailAdler::NachrichtenListeModell;
+using MailAdler::Kern::Nachricht;
 
 int main(int anzahlArgumente, char *argumente[])
 {
     QGuiApplication anwendung(anzahlArgumente, argumente);
-    anwendung.setApplicationName("AdlerMail");
+    anwendung.setApplicationName("MailAdler");
     anwendung.setApplicationVersion("0.1.0");
-    anwendung.setOrganizationName("AdlerMail");
+    anwendung.setOrganizationName("MailAdler");
 
     // ViewModel mit Testdaten
     auto *modell = new NachrichtenListeModell(&anwendung);
     QVector<Nachricht> testDaten = {
-        {1, "max@beispiel.de", "Willkommen bei AdlerMail",
+        {1, "max@beispiel.de", "Willkommen bei MailAdler",
          "Hallo! Dies ist Ihre erste E-Mail.", "", QDateTime::currentDateTime(), false, false},
         {2, "info@qt.io", "Qt 6.7 veröffentlicht",
          "Das Qt-Team freut sich, Qt 6.7 anzukündigen…", "", QDateTime::currentDateTime().addSecs(-3600), false, false},
@@ -56,7 +56,7 @@ int main(int anzahlArgumente, char *argumente[])
 
     QQmlApplicationEngine maschine;
     maschine.rootContext()->setContextProperty("nachrichtenListeModell", modell);
-    maschine.load(QUrl("qrc:/AdlerMail/HauptFenster.qml"));
+    maschine.load(QUrl("qrc:/MailAdler/HauptFenster.qml"));
 
     if (maschine.rootObjects().isEmpty()) return -1;
     return anwendung.exec();
@@ -91,7 +91,7 @@ git commit -m "oberflaeche: C++-ViewModel in main.cpp verdrahtet — 3 Testnachr
 
 ```cpp
 #include "ansichtmodelle/erstellen_ansicht_modell.h"
-using AdlerMail::ErstellenAnsichtModell;
+using MailAdler::ErstellenAnsichtModell;
 
 // in main():
 auto *erstellenModell = new ErstellenAnsichtModell(&anwendung);
@@ -183,7 +183,7 @@ Button {
 #pragma once
 #include <QtCore/QStringListModel>
 
-namespace AdlerMail {
+namespace MailAdler {
 
 class OrdnerListeModell : public QStringListModel {
     Q_OBJECT
@@ -199,7 +199,7 @@ public:
 // ordner_liste_modell.cpp
 #include "ordner_liste_modell.h"
 
-namespace AdlerMail {
+namespace MailAdler {
 
 OrdnerListeModell::OrdnerListeModell(QObject *eltern) : QStringListModel(eltern) {}
 
@@ -258,7 +258,7 @@ ListView {
 #include <QtCore/QVector>
 #include "../kern/nachricht.h"
 
-namespace AdlerMail {
+namespace MailAdler {
 
 namespace Speicher { class Zwischenspeicher; }
 namespace Protokoll { class ImapVerbindung; }
@@ -304,7 +304,7 @@ private:
 #include "../speicher/zwischenspeicher.h"
 #include "../protokoll/imap_verbindung.h"
 
-namespace AdlerMail { namespace Dienst {
+namespace MailAdler { namespace Dienst {
 
 PostfachDienst::PostfachDienst(Speicher::Zwischenspeicher *cache, QObject *eltern)
     : QObject(eltern), m_cache(cache) {}
@@ -400,9 +400,9 @@ void sollteOrdnerLadenMitImap() {
 #include "speicher/zwischenspeicher.h"
 #include "protokoll/imap_verbindung.h"
 
-using AdlerMail::Dienst::PostfachDienst;
-using AdlerMail::Speicher::Zwischenspeicher;
-using AdlerMail::Protokoll::ImapVerbindung;
+using MailAdler::Dienst::PostfachDienst;
+using MailAdler::Speicher::Zwischenspeicher;
+using MailAdler::Protokoll::ImapVerbindung;
 
 // in main():
 auto *cache = new Zwischenspeicher(&anwendung);
@@ -446,7 +446,7 @@ connect(postfachDienst, &PostfachDienst::ordnerListeGeaendert,
 #include <QtCore/QString>
 #include "../../bibliothek/kern/nachricht.h"
 
-namespace AdlerMail {
+namespace MailAdler {
 
 class NachrichtAnsichtModell : public QObject {
     Q_OBJECT

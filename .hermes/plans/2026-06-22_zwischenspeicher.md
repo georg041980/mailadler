@@ -20,7 +20,7 @@
 
 **Dateien:**
 - Erstellen: `pruefungen/tst_zwischenspeicher.cpp`
-- Ändern: `pruefungen/CMakeLists.txt` — `adlermail_pruefung_hinzufuegen(tst_zwischenspeicher)` entkommentieren
+- Ändern: `pruefungen/CMakeLists.txt` — `mailadler_pruefung_hinzufuegen(tst_zwischenspeicher)` entkommentieren
 
 **Code (tst_zwischenspeicher.cpp):**
 
@@ -30,8 +30,8 @@
 #include "speicher/zwischenspeicher.h"
 #include "kern/nachricht.h"
 
-using AdlerMail::Speicher::Zwischenspeicher;
-using AdlerMail::Kern::Nachricht;
+using MailAdler::Speicher::Zwischenspeicher;
+using MailAdler::Kern::Nachricht;
 
 class TestZwischenspeicher : public QObject {
     Q_OBJECT

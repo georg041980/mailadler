@@ -4,7 +4,7 @@
 
 #include "../../bibliothek/kern/konto.h"
 
-namespace AdlerMail
+namespace MailAdler
 {
 
 class KontoAnsichtModell : public QObject
@@ -64,4 +64,4 @@ private:
     qint64 m_kontoId = 0;
 };
 
-} // namespace AdlerMail
+} // namespace MailAdler

@@ -1,6 +1,6 @@
 #include "postfach.h"
 
-namespace AdlerMail
+namespace MailAdler
 {
 namespace Kern
 {
@@ -46,4 +46,4 @@ QVector<Nachricht> Postfach::nachrichten() const
 }
 
 } // namespace Kern
-} // namespace AdlerMail
+} // namespace MailAdler

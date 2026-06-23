@@ -2,7 +2,7 @@
 
 #include "../speicher/datenbank.h"
 
-namespace AdlerMail
+namespace MailAdler
 {
 namespace Dienst
 {
@@ -49,4 +49,4 @@ bool KontoDienst::kontoLoeschen(qint64 id)
 }
 
 } // namespace Dienst
-} // namespace AdlerMail
+} // namespace MailAdler

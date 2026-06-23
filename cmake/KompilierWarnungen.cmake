@@ -1,5 +1,5 @@
 # Einheitliche Kompilierwarnungen für das gesamte Projekt
-function(adlermail_setze_warnungen ziel)
+function(mailadler_setze_warnungen ziel)
     target_compile_options(${ziel} PRIVATE
         -Wall
         -Wextra

@@ -1,7 +1,7 @@
 #pragma once
 #include <QtCore/QString>
 
-namespace AdlerMail
+namespace MailAdler
 {
 namespace Kern
 {
@@ -19,4 +19,4 @@ struct Anhang
 };
 
 } // namespace Kern
-} // namespace AdlerMail
+} // namespace MailAdler

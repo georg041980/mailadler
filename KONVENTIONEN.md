@@ -1,4 +1,4 @@
-# AdlerMail — Programmierkonventionen
+# MailAdler — Programmierkonventionen
 
 > Stand: 22. Juni 2026  
 > Verbindlich für alle Mitwirkenden.  
@@ -36,7 +36,7 @@ Einmal im Team entscheiden, dann fürs ganze Projekt durchziehen.
 | Signale              | Verb im Partizip Perfekt, oder Nomen + `Geaendert` | `verbunden()`, `ordnerListeGeaendert()` |
 | Slots                | `bei` + Quelle + Ereignis    | `beiVerbunden()`, `beiSendenGeklickt()` |
 | Dateinamen           | Kleinschreibung, Unterstriche | `postfach.h`, `nachrichten_dienst.cpp` |
-| Namespaces           | PascalCase, deutsch          | `AdlerMail::Kern`, `AdlerMail::Protokoll` |
+| Namespaces           | PascalCase, deutsch          | `MailAdler::Kern`, `MailAdler::Protokoll` |
 | Makros (selten)      | GROSSBUCHSTABEN              | `ADLERMAIL_VERSION`               |
 
 ---
@@ -56,7 +56,7 @@ Jeder Header folgt dieser Reihenfolge:
 #include "kern/nachricht.h"
 
 // 3. Projekt-Namespace + Bereich
-namespace AdlerMail {
+namespace MailAdler {
 namespace Protokoll {
 
 class ImapVerbindung : public QObject {
@@ -99,7 +99,7 @@ private:
 };
 
 } // namespace Protokoll
-} // namespace AdlerMail
+} // namespace MailAdler
 ```
 
 **Merksatz:** `public` → `signale` → `oeffentlicheSlots` → `privateSlots` → `private`.
@@ -250,7 +250,7 @@ class ImapVerbindung : public QObject {
 ## 8. Projektstruktur
 
 ```
-adlermail/
+mailadler/
 ├── CMakeLists.txt
 ├── cmake/
 │   └── KompilierWarnungen.cmake

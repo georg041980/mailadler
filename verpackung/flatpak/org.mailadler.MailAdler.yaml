@@ -1,8 +1,8 @@
-app-id: org.adlermail.AdlerMail
+app-id: org.mailadler.MailAdler
 runtime: org.kde.Platform
 runtime-version: '6.4'
 sdk: org.kde.Sdk
-command: adlermail
+command: mailadler
 finish-args:
   - --share=ipc
   - --socket=fallback-x11
@@ -15,7 +15,7 @@ cleanup:
   - /lib/pkgconfig
   - /lib/cmake
 modules:
-  - name: adlermail
+  - name: mailadler
     buildsystem: cmake-ninja
     config-opts:
       - -DCMAKE_BUILD_TYPE=Release

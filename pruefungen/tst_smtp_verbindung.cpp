@@ -9,7 +9,7 @@
 
 #include "protokoll/smtp_verbindung.h"
 
-using AdlerMail::Protokoll::SmtpVerbindung;
+using MailAdler::Protokoll::SmtpVerbindung;
 
 /**
  * Mock-SMTP-Server, der vordefinierte Antworten sendet.

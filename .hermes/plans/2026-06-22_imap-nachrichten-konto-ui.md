@@ -2,7 +2,7 @@
 
 > **Für Hermes:** Task für Task implementieren. TDD: erst Test, dann Code, dann Commit.
 
-**Ziel:** AdlerMail kann echte E-Mails von einem IMAP-Server abrufen und anzeigen — plus Konto-Verwaltung im UI.
+**Ziel:** MailAdler kann echte E-Mails von einem IMAP-Server abrufen und anzeigen — plus Konto-Verwaltung im UI.
 
 **Architektur:** ImapVerbindung bekommt SELECT+FETCH. Datenbank speichert Nachrichten. KontoDienst wird ans UI gebunden. Startup: Konto wählen → IMAP verbinden → Nachrichten laden.
 

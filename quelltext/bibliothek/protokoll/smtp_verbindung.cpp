@@ -2,7 +2,7 @@
 
 #include <QtCore/QDebug>
 
-namespace AdlerMail
+namespace MailAdler
 {
 namespace Protokoll
 {
@@ -112,7 +112,7 @@ void SmtpVerbindung::sende(const QString& absender, const QStringList& empfaenge
     }
 
     m_phase = Phase::Ehlo;
-    sendeBefehl("EHLO adlermail");
+    sendeBefehl("EHLO mailadler");
 }
 
 // ---------------------------------------------------------------------------
@@ -163,7 +163,7 @@ void SmtpVerbindung::verarbeiteAntwortZeile(const QByteArray& zeile)
     case Phase::Verbinden:
         // Begrüßung (220) empfangen → EHLO senden
         m_phase = Phase::Ehlo;
-        sendeBefehl("EHLO adlermail");
+        sendeBefehl("EHLO mailadler");
         break;
 
     case Phase::Ehlo:
@@ -291,4 +291,4 @@ void SmtpVerbindung::beiSslFehlern(const QList<QSslError>& fehler)
 }
 
 } // namespace Protokoll
-} // namespace AdlerMail
+} // namespace MailAdler

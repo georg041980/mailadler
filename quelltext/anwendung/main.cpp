@@ -1,4 +1,4 @@
-// AdlerMail — Einstiegspunkt
+// MailAdler — Einstiegspunkt
 #include <QtCore/QDir>
 #include <QtCore/QObject>
 #include <QtCore/QStandardPaths>
@@ -21,32 +21,32 @@
 #include "speicher/datenbank.h"
 #include "speicher/zwischenspeicher.h"
 
-using AdlerMail::ErstellenAnsichtModell;
-using AdlerMail::KontoAnsichtModell;
-using AdlerMail::KontoAuswahlModell;
-using AdlerMail::NachrichtAnsichtModell;
-using AdlerMail::NachrichtenListeModell;
-using AdlerMail::OrdnerListeModell;
-using AdlerMail::Dienst::KontoDienst;
-using AdlerMail::Dienst::PostfachDienst;
-using AdlerMail::Protokoll::ImapVerbindung;
-using AdlerMail::Protokoll::SmtpVerbindung;
-using AdlerMail::Speicher::Datenbank;
-using AdlerMail::Speicher::Zwischenspeicher;
+using MailAdler::ErstellenAnsichtModell;
+using MailAdler::KontoAnsichtModell;
+using MailAdler::KontoAuswahlModell;
+using MailAdler::NachrichtAnsichtModell;
+using MailAdler::NachrichtenListeModell;
+using MailAdler::OrdnerListeModell;
+using MailAdler::Dienst::KontoDienst;
+using MailAdler::Dienst::PostfachDienst;
+using MailAdler::Protokoll::ImapVerbindung;
+using MailAdler::Protokoll::SmtpVerbindung;
+using MailAdler::Speicher::Datenbank;
+using MailAdler::Speicher::Zwischenspeicher;
 
 int main(int anzahlArgumente, char* argumente[])
 {
     QGuiApplication anwendung(anzahlArgumente, argumente);
-    anwendung.setApplicationName("AdlerMail");
+    anwendung.setApplicationName("MailAdler");
     anwendung.setApplicationVersion("1.0.0");
-    anwendung.setOrganizationName("AdlerMail");
+    anwendung.setOrganizationName("MailAdler");
 
     // --- Datenbank ---
 
     auto datenpfad = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation);
     QDir().mkpath(datenpfad);
     auto* datenbank = new Datenbank(&anwendung);
-    datenbank->oeffne(datenpfad + "/adlermail.db");
+    datenbank->oeffne(datenpfad + "/mailadler.db");
 
     // --- Dienste ---
 
@@ -85,7 +85,7 @@ int main(int anzahlArgumente, char* argumente[])
 
     // Konto speichern → Datenbank
     QObject::connect(kontoAnsichtModell, &KontoAnsichtModell::speichernAngefordert, kontoDienst,
-                     [kontoDienst](const AdlerMail::Kern::Konto& k)
+                     [kontoDienst](const MailAdler::Kern::Konto& k)
                      {
                          kontoDienst->kontoAnlegen(k.email, k.name, k.imapServer, k.imapPort, k.smtpServer, k.smtpPort,
                                                    k.benutzer, k.passwort, k.signatur);
@@ -108,8 +108,8 @@ int main(int anzahlArgumente, char* argumente[])
     QObject::connect(erstellenModell, &ErstellenAnsichtModell::entwurfSpeichernAngefordert, datenbank,
                      [erstellenModell, datenbank]()
                      {
-                         AdlerMail::Kern::Nachricht n;
-                         n.absender = "ich@adlermail.de";
+                         MailAdler::Kern::Nachricht n;
+                         n.absender = "ich@mailadler.de";
                          n.betreff = erstellenModell->betreff();
                          n.inhalt = erstellenModell->inhalt();
                          n.datum = QDateTime::currentDateTime();
@@ -147,7 +147,7 @@ int main(int anzahlArgumente, char* argumente[])
     maschine.rootContext()->setContextProperty("kontoAnsichtModell", kontoAnsichtModell);
     maschine.rootContext()->setContextProperty("kontoAuswahlModell", kontoAuswahlModell);
     maschine.rootContext()->setContextProperty("postfachDienst", postfachDienst);
-    maschine.load(QUrl("qrc:/AdlerMail/HauptFenster.qml"));
+    maschine.load(QUrl("qrc:/MailAdler/HauptFenster.qml"));
 
     if (maschine.rootObjects().isEmpty())
         return -1;

@@ -1,6 +1,6 @@
 #include "nachrichten_liste_modell.h"
 
-namespace AdlerMail
+namespace MailAdler
 {
 
 NachrichtenListeModell::NachrichtenListeModell(QObject* eltern) : QAbstractListModel(eltern)
@@ -51,4 +51,4 @@ Kern::Nachricht NachrichtenListeModell::nachrichtBei(int index) const
     return m_nachrichten.at(index);
 }
 
-} // namespace AdlerMail
+} // namespace MailAdler

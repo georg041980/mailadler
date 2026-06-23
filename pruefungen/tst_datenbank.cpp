@@ -5,8 +5,8 @@
 #include "kern/nachricht.h"
 #include "speicher/datenbank.h"
 
-using AdlerMail::Kern::Konto;
-using AdlerMail::Speicher::Datenbank;
+using MailAdler::Kern::Konto;
+using MailAdler::Speicher::Datenbank;
 
 class TestDatenbank : public QObject
 {
@@ -97,7 +97,7 @@ private slots:
     // --- Phase 3: Nachrichten-CRUD ---
     void sollteNachrichtSpeichern()
     {
-        AdlerMail::Kern::Nachricht n;
+        MailAdler::Kern::Nachricht n;
         n.absender = "test@example.com";
         n.betreff = "Testnachricht";
         n.inhalt = "Das ist der Inhalt.";

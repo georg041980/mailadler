@@ -1,6 +1,6 @@
 #include "nachricht_ansicht_modell.h"
 
-namespace AdlerMail
+namespace MailAdler
 {
 
 NachrichtAnsichtModell::NachrichtAnsichtModell(QObject* eltern) : QObject(eltern)
@@ -61,4 +61,4 @@ void NachrichtAnsichtModell::leeren()
     emit nachrichtGeaendert();
 }
 
-} // namespace AdlerMail
+} // namespace MailAdler

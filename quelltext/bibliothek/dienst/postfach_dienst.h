@@ -5,7 +5,7 @@
 
 #include "../kern/nachricht.h"
 
-namespace AdlerMail
+namespace MailAdler
 {
 
 namespace Speicher
@@ -70,4 +70,4 @@ private:
 };
 
 } // namespace Dienst
-} // namespace AdlerMail
+} // namespace MailAdler

@@ -35,7 +35,7 @@ import QtQuick.Layouts
 
 ApplicationWindow {
     id: hauptFenster
-    title: "AdlerMail"
+    title: "MailAdler"
     width: 1024
     height: 700
     visible: true
@@ -85,7 +85,7 @@ ApplicationWindow {
 #include "ansichtmodelle/nachrichten_liste_modell.h"
 
 // Vor engine.load():
-auto *modell = new AdlerMail::NachrichtenListeModell(&anwendung);
+auto *modell = new MailAdler::NachrichtenListeModell(&anwendung);
 maschine.rootContext()->setContextProperty("nachrichtenListeModell", modell);
 ```
 
@@ -94,8 +94,8 @@ maschine.rootContext()->setContextProperty("nachrichtenListeModell", modell);
 ```cpp
 QVector<Kern::Nachricht> testDaten;
 Kern::Nachricht n;
-n.id = 1; n.betreff = "Willkommen bei AdlerMail";
-n.absender = "adlermail@nousresearch.com";
+n.id = 1; n.betreff = "Willkommen bei MailAdler";
+n.absender = "mailadler@nousresearch.com";
 n.datum = QDateTime::currentDateTime();
 n.gelesen = false;
 testDaten.append(n);
@@ -106,7 +106,7 @@ modell->setzeNachrichten(testDaten);
 
 ```bash
 cmake --build bau --parallel $(nproc)
-./bau/quelltext/anwendung/adlermail
+./bau/quelltext/anwendung/mailadler
 ```
 
 Erwartet: Fenster mit linker Ordnerleiste + Nachrichtenliste mit einem Eintrag.
@@ -206,7 +206,7 @@ Rectangle {
 **Schritt 3: main.cpp erweitern**
 
 ```cpp
-auto *erstellenModell = new AdlerMail::ErstellenAnsichtModell(&anwendung);
+auto *erstellenModell = new MailAdler::ErstellenAnsichtModell(&anwendung);
 maschine.rootContext()->setContextProperty("erstellenAnsichtModell", erstellenModell);
 ```
 
@@ -214,14 +214,14 @@ maschine.rootContext()->setContextProperty("erstellenAnsichtModell", erstellenMo
 
 `main.cpp` temporär umstellen, um ErstellenAnsicht zu laden:
 ```cpp
-maschine.load(QUrl("qrc:/AdlerMail/ErstellenAnsicht.qml"));
+maschine.load(QUrl("qrc:/MailAdler/ErstellenAnsicht.qml"));
 ```
 
 **Bauen + prüfen:**
 
 ```bash
 cmake --build bau --parallel $(nproc)
-./bau/quelltext/anwendung/adlermail
+./bau/quelltext/anwendung/mailadler
 ```
 
 Erwartet: Senden-Button grau → An+Betreff eintippen → Button aktiv.
@@ -309,7 +309,7 @@ SplitView {
     NachrichtAnsicht {
         SplitView.fillHeight: true
         nachrichtBetreff: "Test-Betreff"
-        nachrichtAbsender: "test@adlermail.dev"
+        nachrichtAbsender: "test@mailadler.dev"
         nachrichtInhalt: "Das ist der Nachrichteninhalt.\n\nMehrere Zeilen."
     }
 }

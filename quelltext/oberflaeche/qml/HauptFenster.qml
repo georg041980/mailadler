@@ -4,7 +4,7 @@ import QtQuick.Layouts
 
 ApplicationWindow {
     id: hauptFenster
-    title: "AdlerMail"
+    title: "MailAdler"
     width: 1100
     height: 700
     visible: true

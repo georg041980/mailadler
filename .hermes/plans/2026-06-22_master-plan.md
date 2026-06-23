@@ -1,4 +1,4 @@
-# AdlerMail — Master-Plan v0.1 → v1.0
+# MailAdler — Master-Plan v0.1 → v1.0
 
 > Stand: 22. Juni 2026 | 13 Commits | 6 Tests grün | 0 Warnungen
 

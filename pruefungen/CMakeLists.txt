@@ -3,20 +3,20 @@
 find_package(Qt6 REQUIRED COMPONENTS Test)
 
 # Helfer-Makro
-macro(adlermail_pruefung_hinzufuegen name)
+macro(mailadler_pruefung_hinzufuegen name)
     add_executable(${name} ${name}.cpp)
     target_link_libraries(${name} PRIVATE
         Qt6::Test
-        adlermail_bibliothek
+        mailadler_bibliothek
     )
-    adlermail_setze_warnungen(${name})
+    mailadler_setze_warnungen(${name})
     add_test(NAME ${name} COMMAND ${name})
 endmacro()
 
 # Tests (auskommentiert, bis erste Testdatei existiert)
-adlermail_pruefung_hinzufuegen(tst_datenbank)
-adlermail_pruefung_hinzufuegen(tst_zwischenspeicher)
-adlermail_pruefung_hinzufuegen(tst_imap_verbindung)
-adlermail_pruefung_hinzufuegen(tst_smtp_verbindung)
-adlermail_pruefung_hinzufuegen(tst_konto_dienst)
-adlermail_pruefung_hinzufuegen(tst_postfach_dienst)
+mailadler_pruefung_hinzufuegen(tst_datenbank)
+mailadler_pruefung_hinzufuegen(tst_zwischenspeicher)
+mailadler_pruefung_hinzufuegen(tst_imap_verbindung)
+mailadler_pruefung_hinzufuegen(tst_smtp_verbindung)
+mailadler_pruefung_hinzufuegen(tst_konto_dienst)
+mailadler_pruefung_hinzufuegen(tst_postfach_dienst)

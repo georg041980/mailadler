@@ -9,7 +9,7 @@ AGENTS="$PROJEKT/AGENTS.md"
 BAU="$PROJEKT/bau"
 
 # Version aus project()-Aufruf (nicht cmake_minimum_required!)
-VERSION=$(grep -A5 '^project(AdlerMail' "$PROJEKT/CMakeLists.txt" | grep -oP 'VERSION \K[0-9.]+' || echo "0.1.0")
+VERSION=$(grep -A5 '^project(MailAdler' "$PROJEKT/CMakeLists.txt" | grep -oP 'VERSION \K[0-9.]+' || echo "0.1.0")
 
 # Tatsächliche Test-Binaries — keine _autogen-Ordner
 TEST_SUITEN=0

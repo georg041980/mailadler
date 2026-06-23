@@ -4,7 +4,7 @@
 
 #include "../../bibliothek/kern/nachricht.h"
 
-namespace AdlerMail
+namespace MailAdler
 {
 
 /**
@@ -49,4 +49,4 @@ private:
     QStringList m_anhaengeNamen;
 };
 
-} // namespace AdlerMail
+} // namespace MailAdler

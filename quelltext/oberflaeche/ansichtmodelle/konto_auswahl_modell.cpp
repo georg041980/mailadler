@@ -1,6 +1,6 @@
 #include "konto_auswahl_modell.h"
 
-namespace AdlerMail
+namespace MailAdler
 {
 
 KontoAuswahlModell::KontoAuswahlModell(QObject* eltern) : QStringListModel(eltern)
@@ -29,4 +29,4 @@ void KontoAuswahlModell::beiIndexGeaendert(int index)
         emit kontoAusgewaehlt(m_konten[index]);
 }
 
-} // namespace AdlerMail
+} // namespace MailAdler

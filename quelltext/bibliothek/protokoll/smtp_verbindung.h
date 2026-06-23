@@ -5,7 +5,7 @@
 #include <QtCore/QStringList>
 #include <QtNetwork/QSslSocket>
 
-namespace AdlerMail
+namespace MailAdler
 {
 namespace Protokoll
 {
@@ -83,4 +83,4 @@ private:
 };
 
 } // namespace Protokoll
-} // namespace AdlerMail
+} // namespace MailAdler

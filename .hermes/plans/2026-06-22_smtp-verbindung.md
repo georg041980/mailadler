@@ -25,7 +25,7 @@
 #include <QtTest>
 #include "protokoll/smtp_verbindung.h"
 
-using AdlerMail::Protokoll::SmtpVerbindung;
+using MailAdler::Protokoll::SmtpVerbindung;
 
 // FakeSocket wie bei IMAP — kopiert aus tst_imap_verbindung.cpp
 // (In Produktion: gemeinsame Test-Helper-Datei erstellen)
@@ -102,7 +102,7 @@ QTEST_MAIN(TestSmtpVerbindung)
 
 **CMakeLists.txt:**
 ```cmake
-adlermail_pruefung_hinzufuegen(tst_smtp_verbindung)
+mailadler_pruefung_hinzufuegen(tst_smtp_verbindung)
 ```
 
 ### Aufgabe 2: Implementierung — SMTP-Protokoll
@@ -121,7 +121,7 @@ adlermail_pruefung_hinzufuegen(tst_smtp_verbindung)
 #include <QtCore/QStringList>
 #include <QtNetwork/QTcpSocket>
 
-namespace AdlerMail { namespace Protokoll {
+namespace MailAdler { namespace Protokoll {
 
 class SmtpVerbindung : public QObject {
     Q_OBJECT
@@ -181,7 +181,7 @@ private:
 #include "smtp_verbindung.h"
 #include <QtNetwork/QSslSocket>
 
-namespace AdlerMail { namespace Protokoll {
+namespace MailAdler { namespace Protokoll {
 
 SmtpVerbindung::SmtpVerbindung(QObject *eltern) : QObject(eltern) {}
 SmtpVerbindung::~SmtpVerbindung() {
@@ -247,7 +247,7 @@ void SmtpVerbindung::verarbeiteAntwort(const QString &zeile) {
 
     switch (m_schritt) {
     case Schritt::WarteBegruessung:
-        sendeZeile("EHLO adlermail");
+        sendeZeile("EHLO mailadler");
         m_schritt = Schritt::WarteEhlo;
         break;
 

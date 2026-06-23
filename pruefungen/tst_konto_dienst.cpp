@@ -5,8 +5,8 @@
 #include "kern/konto.h"
 #include "speicher/datenbank.h"
 
-using AdlerMail::Dienst::KontoDienst;
-using AdlerMail::Speicher::Datenbank;
+using MailAdler::Dienst::KontoDienst;
+using MailAdler::Speicher::Datenbank;
 
 class TestKontoDienst : public QObject
 {

@@ -35,11 +35,11 @@ add_subdirectory(pruefungen)
 
 In `pruefungen/CMakeLists.txt`, Zeilen 25-29:
 ```cmake
-# adlermail_pruefung_hinzufuegen(tst_datenbank)
+# mailadler_pruefung_hinzufuegen(tst_datenbank)
 ```
 Ersetzen durch:
 ```cmake
-adlermail_pruefung_hinzufuegen(tst_datenbank)
+mailadler_pruefung_hinzufuegen(tst_datenbank)
 ```
 
 **Schritt 3: Bauen + prüfen**
@@ -79,7 +79,7 @@ git commit -m "build: pruefungen einklinken, tst_datenbank vorbereitet"
 #include <QtTest>
 #include "speicher/datenbank.h"
 
-using AdlerMail::Speicher::Datenbank;
+using MailAdler::Speicher::Datenbank;
 
 class TestDatenbank : public QObject {
     Q_OBJECT
@@ -157,7 +157,7 @@ private:
 // datenbank.cpp
 Datenbank::Datenbank(QObject *eltern) : QObject(eltern) {
     // Eindeutigen Namen pro Instanz (Adresse als String)
-    m_verbindungsName = QString("adlermail_%1").arg(
+    m_verbindungsName = QString("mailadler_%1").arg(
         reinterpret_cast<quintptr>(this), 0, 16);
 }
 
@@ -226,7 +226,7 @@ git commit -m "speicher: Datenbank mit eindeutigen Verbindungsnamen + Tests"
 
 ```cpp
 #include "kern/konto.h"
-using AdlerMail::Kern::Konto;
+using MailAdler::Kern::Konto;
 
 // In class TestDatenbank, privateSlots:
 

@@ -3,7 +3,7 @@
 #include <QtCore/QDebug>
 #include <QtCore/QRegularExpression>
 
-namespace AdlerMail
+namespace MailAdler
 {
 namespace Protokoll
 {
@@ -581,4 +581,4 @@ void ImapVerbindung::beiSslFehlern(const QList<QSslError>& fehler)
 }
 
 } // namespace Protokoll
-} // namespace AdlerMail
+} // namespace MailAdler

@@ -4,7 +4,7 @@
 
 #include "../../bibliothek/kern/nachricht.h"
 
-namespace AdlerMail
+namespace MailAdler
 {
 
 class NachrichtenListeModell : public QAbstractListModel
@@ -32,4 +32,4 @@ private:
     QVector<Kern::Nachricht> m_nachrichten;
 };
 
-} // namespace AdlerMail
+} // namespace MailAdler

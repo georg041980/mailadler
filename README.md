@@ -1,4 +1,4 @@
-# AdlerMail
+# MailAdler
 
 > **Ein E-Mail-Client, der auf Deutsch gebaut wird, ab Tag eins auf Deutsch, Englisch und Spanisch spricht — und mitwächst, ohne zu wuchern.**
 
@@ -16,7 +16,7 @@ Plattformübergreifender E-Mail-Client mit **C++17**, **Qt 6** und **QML**.
 
 ## Vision
 
-AdlerMail soll der E-Mail-Client werden, den man sich selbst zusammenstellen kann: eine schlanke Basis, eine klare Architektur, mehrsprachig von Haus aus — mit wachsenden Funktionsbausteinen, aber ohne Kompromisse bei Sicherheit, Stabilität und Übersichtlichkeit. Der Funktionsumfang lässt sich je nach Anforderung erweitern oder reduzieren.
+MailAdler soll der E-Mail-Client werden, den man sich selbst zusammenstellen kann: eine schlanke Basis, eine klare Architektur, mehrsprachig von Haus aus — mit wachsenden Funktionsbausteinen, aber ohne Kompromisse bei Sicherheit, Stabilität und Übersichtlichkeit. Der Funktionsumfang lässt sich je nach Anforderung erweitern oder reduzieren.
 
 ## Technologie
 
@@ -81,7 +81,7 @@ quelltext/
 
 ## Versionierung
 
-AdlerMail startet mit **v0.0.1**. Es gilt Semantic Versioning:
+MailAdler startet mit **v0.0.1**. Es gilt Semantic Versioning:
 
 | Stelle | Hochzählen wenn |
 |---|---|
@@ -102,7 +102,7 @@ Tags werden auf dem Hauptzweig gesetzt: `git tag -a v0.1.0 -m "Version 0.1.0: ..
    quelltext/oberflaeche/erweiterung/kalender/
    pruefungen/erweiterung/kalender/
    ```
-3. `AdlerMail::Erweiterung::Modul` implementieren
+3. `MailAdler::Erweiterung::Modul` implementieren
 4. CMake-Option aktivieren
 5. Logik, ViewModel und QML implementieren
 6. Tests und Übersetzungen ergänzen
@@ -268,7 +268,7 @@ Fehler werden am besten über GitHub Issues gemeldet:
 
 ## Entwicklungsstatus und Fehlerverwaltung in der App
 
-AdlerMail soll Nutzer und Entwickler über den aktuellen Stand direkt informieren. Dafür gibt es in der App einen Bereich **„Entwicklung & Fehler"**.
+MailAdler soll Nutzer und Entwickler über den aktuellen Stand direkt informieren. Dafür gibt es in der App einen Bereich **„Entwicklung & Fehler"**.
 
 ### Was Nutzer sehen
 
@@ -590,8 +590,8 @@ Die folgenden Beispiele zeigen, wie Rentnerinnen, Entwickler und andere Nutzer m
 ### Flatpak (Linux)
 
 ```bash
-flatpak-builder --user --install build-dir verpackung/flatpak/org.adlermail.AdlerMail.yaml
-flatpak run org.adlermail.AdlerMail
+flatpak-builder --user --install build-dir verpackung/flatpak/org.mailadler.MailAdler.yaml
+flatpak run org.mailadler.MailAdler
 ```
 
 ### Windows-Installer

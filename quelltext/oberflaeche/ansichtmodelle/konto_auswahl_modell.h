@@ -3,7 +3,7 @@
 
 #include "../bibliothek/kern/konto.h"
 
-namespace AdlerMail
+namespace MailAdler
 {
 
 class KontoAuswahlModell : public QStringListModel
@@ -24,4 +24,4 @@ private:
     QVector<Kern::Konto> m_konten;
 };
 
-} // namespace AdlerMail
+} // namespace MailAdler

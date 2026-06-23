@@ -2,7 +2,7 @@
 
 > **Für Hermes:** Dieser Plan ist nur ausführbar auf einem Windows-Rechner mit MSVC oder MinGW.
 
-**Ziel:** AdlerMail kompiliert und läuft unter Windows 10/11.
+**Ziel:** MailAdler kompiliert und läuft unter Windows 10/11.
 
 **Vorbedingung:** Alle vorherigen Pläne abgeschlossen. Flatpak-Paket existiert.
 
@@ -65,9 +65,9 @@ git commit -m "build: Windows-Plattform-Erkennung in CMake"
 ```cmake
 if(WIN32)
     set(CPACK_GENERATOR "NSIS")
-    set(CPACK_NSIS_DISPLAY_NAME "AdlerMail")
+    set(CPACK_NSIS_DISPLAY_NAME "MailAdler")
     set(CPACK_NSIS_INSTALL_ROOT "$PROGRAMFILES64")
-    set(CPACK_PACKAGE_NAME "AdlerMail")
+    set(CPACK_PACKAGE_NAME "MailAdler")
     set(CPACK_PACKAGE_VERSION ${PROJECT_VERSION})
     include(CPack)
 endif()
@@ -133,4 +133,4 @@ git commit -m "ci: Windows-Build-Job in GitHub Actions"
 | 2 | NSIS-Installer via CPack |
 | 3 | CI baut automatisch unter Windows |
 
-**Nach diesem Plan:** AdlerMail ist auf Windows baubar und verteilbar. macOS/iOS/Android folgen später.
+**Nach diesem Plan:** MailAdler ist auf Windows baubar und verteilbar. macOS/iOS/Android folgen später.

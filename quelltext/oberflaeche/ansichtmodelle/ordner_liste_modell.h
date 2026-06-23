@@ -1,7 +1,7 @@
 #pragma once
 #include <QtCore/QStringListModel>
 
-namespace AdlerMail
+namespace MailAdler
 {
 
 class OrdnerListeModell : public QStringListModel
@@ -12,4 +12,4 @@ public:
     void setzeOrdner(const QStringList& ordner);
 };
 
-} // namespace AdlerMail
+} // namespace MailAdler

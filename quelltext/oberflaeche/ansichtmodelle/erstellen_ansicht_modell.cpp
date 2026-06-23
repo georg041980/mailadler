@@ -2,7 +2,7 @@
 
 #include <QtCore/QFileInfo>
 
-namespace AdlerMail
+namespace MailAdler
 {
 
 ErstellenAnsichtModell::ErstellenAnsichtModell(QObject* eltern) : QObject(eltern)
@@ -112,4 +112,4 @@ void ErstellenAnsichtModell::aktualisiereKannSenden()
     }
 }
 
-} // namespace AdlerMail
+} // namespace MailAdler

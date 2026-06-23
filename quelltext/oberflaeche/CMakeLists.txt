@@ -1,7 +1,7 @@
 # Oberfläche — QML + C++-AnsichtModelle
-add_library(adlermail_oberflaeche STATIC)
+add_library(mailadler_oberflaeche STATIC)
 
-target_sources(adlermail_oberflaeche PRIVATE
+target_sources(mailadler_oberflaeche PRIVATE
     ansichtmodelle/erstellen_ansicht_modell.h
     ansichtmodelle/erstellen_ansicht_modell.cpp
     ansichtmodelle/nachrichten_liste_modell.h
@@ -24,18 +24,18 @@ set(QML_DATEIEN
     qml/ErstellenAnsicht.qml
 )
 
-qt6_add_qml_module(adlermail_oberflaeche
-    URI AdlerMail
+qt6_add_qml_module(mailadler_oberflaeche
+    URI MailAdler
     VERSION 1.0
     QML_FILES ${QML_DATEIEN}
 )
 
-target_include_directories(adlermail_oberflaeche PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
-target_link_libraries(adlermail_oberflaeche PUBLIC
-    adlermail_bibliothek
+target_include_directories(mailadler_oberflaeche PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+target_link_libraries(mailadler_oberflaeche PUBLIC
+    mailadler_bibliothek
     Qt6::Core
     Qt6::Qml
     Qt6::Quick
 )
 
-adlermail_setze_warnungen(adlermail_oberflaeche)
+mailadler_setze_warnungen(mailadler_oberflaeche)

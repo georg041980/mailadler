@@ -2,7 +2,7 @@
 #include <QtCore/QObject>
 #include <QtCore/QString>
 
-namespace AdlerMail
+namespace MailAdler
 {
 namespace Kern
 {
@@ -26,4 +26,4 @@ struct Konto
 };
 
 } // namespace Kern
-} // namespace AdlerMail
+} // namespace MailAdler

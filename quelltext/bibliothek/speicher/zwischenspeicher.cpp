@@ -1,6 +1,6 @@
 #include "zwischenspeicher.h"
 
-namespace AdlerMail
+namespace MailAdler
 {
 namespace Speicher
 {
@@ -30,4 +30,4 @@ void Zwischenspeicher::leeren()
 }
 
 } // namespace Speicher
-} // namespace AdlerMail
+} // namespace MailAdler

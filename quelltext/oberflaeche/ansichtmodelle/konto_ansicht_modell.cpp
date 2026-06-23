@@ -1,6 +1,6 @@
 #include "konto_ansicht_modell.h"
 
-namespace AdlerMail
+namespace MailAdler
 {
 
 KontoAnsichtModell::KontoAnsichtModell(QObject* eltern) : QObject(eltern)
@@ -194,4 +194,4 @@ void KontoAnsichtModell::aktualisiereKannSpeichern()
     }
 }
 
-} // namespace AdlerMail
+} // namespace MailAdler

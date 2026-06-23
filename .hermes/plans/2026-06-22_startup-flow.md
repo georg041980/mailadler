@@ -171,25 +171,25 @@ git commit -m "dienst: PostfachDienst mit IMAP verdrahtet (ordnerLaden)"
 
 int main(int anzahlArgumente, char *argumente[]) {
     QGuiApplication anwendung(anzahlArgumente, argumente);
-    anwendung.setApplicationName("AdlerMail");
+    anwendung.setApplicationName("MailAdler");
     anwendung.setApplicationVersion("1.0.0");
-    anwendung.setOrganizationName("AdlerMail");
+    anwendung.setOrganizationName("MailAdler");
 
     // --- Schichten aufbauen ---
-    auto *datenbank = new AdlerMail::Speicher::Datenbank(&anwendung);
+    auto *datenbank = new MailAdler::Speicher::Datenbank(&anwendung);
     QString dbPfad = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation)
-                     + "/adlermail.db";
+                     + "/mailadler.db";
     QDir().mkpath(QFileInfo(dbPfad).absolutePath());
     datenbank->oeffne(dbPfad);
 
-    auto *kontoDienst = new AdlerMail::Dienst::KontoDienst(datenbank, &anwendung);
-    auto *cache = new AdlerMail::Speicher::Zwischenspeicher(&anwendung);
-    auto *imap = new AdlerMail::Protokoll::ImapVerbindung(&anwendung);
-    auto *postfachDienst = new AdlerMail::Dienst::PostfachDienst(cache, imap, &anwendung);
+    auto *kontoDienst = new MailAdler::Dienst::KontoDienst(datenbank, &anwendung);
+    auto *cache = new MailAdler::Speicher::Zwischenspeicher(&anwendung);
+    auto *imap = new MailAdler::Protokoll::ImapVerbindung(&anwendung);
+    auto *postfachDienst = new MailAdler::Dienst::PostfachDienst(cache, imap, &anwendung);
 
     // --- ViewModels ---
-    auto *nachrichtenModell = new AdlerMail::NachrichtenListeModell(&anwendung);
-    auto *erstellenModell = new AdlerMail::ErstellenAnsichtModell(&anwendung);
+    auto *nachrichtenModell = new MailAdler::NachrichtenListeModell(&anwendung);
+    auto *erstellenModell = new MailAdler::ErstellenAnsichtModell(&anwendung);
 
     // --- QML-Engine ---
     QQmlApplicationEngine maschine;
@@ -200,14 +200,14 @@ int main(int anzahlArgumente, char *argumente[]) {
     auto konten = kontoDienst->alleKonten();
     if (!konten.isEmpty()) {
         auto &k = konten.first();
-        QObject::connect(postfachDienst, &AdlerMail::Dienst::PostfachDienst::ordnerGeladen,
+        QObject::connect(postfachDienst, &MailAdler::Dienst::PostfachDienst::ordnerGeladen,
                          &anwendung, [&](const QStringList &) {
             // TODO: Nachrichten für INBOX laden
         });
         postfachDienst->verbinden(k.imapServer, k.imapPort, k.benutzer, k.passwort);
     }
 
-    maschine.load(QUrl("qrc:/AdlerMail/HauptFenster.qml"));
+    maschine.load(QUrl("qrc:/MailAdler/HauptFenster.qml"));
 
     if (maschine.rootObjects().isEmpty()) return -1;
     return anwendung.exec();

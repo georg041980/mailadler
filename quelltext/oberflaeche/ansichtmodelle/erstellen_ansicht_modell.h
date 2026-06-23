@@ -3,7 +3,7 @@
 #include <QtCore/QString>
 #include <QtCore/QStringList>
 
-namespace AdlerMail
+namespace MailAdler
 {
 
 class ErstellenAnsichtModell : public QObject
@@ -52,4 +52,4 @@ private:
     QStringList m_anhaenge;
 };
 
-} // namespace AdlerMail
+} // namespace MailAdler

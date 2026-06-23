@@ -22,14 +22,14 @@ QString entschluessele(const QString& base64)
 
 } // namespace
 
-namespace AdlerMail
+namespace MailAdler
 {
 namespace Speicher
 {
 
 Datenbank::Datenbank(QObject* eltern) : QObject(eltern)
 {
-    m_verbindungsName = QString("adlermail_%1").arg(reinterpret_cast<quintptr>(this), 0, 16);
+    m_verbindungsName = QString("mailadler_%1").arg(reinterpret_cast<quintptr>(this), 0, 16);
 }
 
 Datenbank::~Datenbank()
@@ -261,4 +261,4 @@ void Datenbank::erzeugeTabellen()
 }
 
 } // namespace Speicher
-} // namespace AdlerMail
+} // namespace MailAdler

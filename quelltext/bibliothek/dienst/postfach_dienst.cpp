@@ -4,7 +4,7 @@
 #include "../speicher/datenbank.h"
 #include "../speicher/zwischenspeicher.h"
 
-namespace AdlerMail
+namespace MailAdler
 {
 namespace Dienst
 {
@@ -154,4 +154,4 @@ void PostfachDienst::setzeNachrichten(const QVector<Kern::Nachricht>& n)
 }
 
 } // namespace Dienst
-} // namespace AdlerMail
+} // namespace MailAdler

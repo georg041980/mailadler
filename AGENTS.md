@@ -2,7 +2,7 @@
 
 > Diese Datei wird automatisch geladen, wenn im Projektverzeichnis gearbeitet wird.
 
-**Projekt:** AdlerMail — plattformübergreifender E-Mail-Client mit C++17, Qt 6 und QML.
+**Projekt:** MailAdler — plattformübergreifender E-Mail-Client mit C++17, Qt 6 und QML.
 
 **Repository:** https://github.com/georg041980/mailadler
 

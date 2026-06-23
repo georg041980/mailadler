@@ -7,7 +7,7 @@
 
 #include "../kern/nachricht.h"
 
-namespace AdlerMail
+namespace MailAdler
 {
 namespace Protokoll
 {
@@ -122,4 +122,4 @@ private:
 };
 
 } // namespace Protokoll
-} // namespace AdlerMail
+} // namespace MailAdler

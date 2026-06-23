@@ -1,8 +1,8 @@
 [Desktop Entry]
 Type=Application
-Name=AdlerMail
+Name=MailAdler
 Comment=Plattformübergreifender E-Mail-Client
-Exec=adlermail
-Icon=org.adlermail.AdlerMail
+Exec=mailadler
+Icon=org.mailadler.MailAdler
 Categories=Network;Email;
 Terminal=false

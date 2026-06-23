@@ -7,7 +7,7 @@
 
 #include "anhang.h"
 
-namespace AdlerMail
+namespace MailAdler
 {
 namespace Kern
 {
@@ -29,4 +29,4 @@ struct Nachricht
 };
 
 } // namespace Kern
-} // namespace AdlerMail
+} // namespace MailAdler

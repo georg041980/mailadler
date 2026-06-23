@@ -8,10 +8,10 @@
 #include "protokoll/imap_verbindung.h"
 #include "speicher/zwischenspeicher.h"
 
-using AdlerMail::Dienst::PostfachDienst;
-using AdlerMail::Kern::Nachricht;
-using AdlerMail::Protokoll::ImapVerbindung;
-using AdlerMail::Speicher::Zwischenspeicher;
+using MailAdler::Dienst::PostfachDienst;
+using MailAdler::Kern::Nachricht;
+using MailAdler::Protokoll::ImapVerbindung;
+using MailAdler::Speicher::Zwischenspeicher;
 
 // ---------------------------------------------------------------------------
 class MiniImapServer : public QObject
