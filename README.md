@@ -13,7 +13,11 @@ Plattformübergreifender E-Mail-Client mit Qt 6 und QML.
 - **Nachrichten:** Suchen, Entwürfe speichern, Antworten, Löschen
 - **Anhänge:** Anzeige (Empfang), Auswahl (Senden)
 - **Sicherheit:** Passwort-Base64, TLS-Zertifikatsprüfung
-- **Sprache:** Deutsch (fest, keine Übersetzungsdateien)
+- **Sprache:** Mehrsprachig: Deutsch, Englisch, Spanisch (Qt-Übersetzungssystem)
+
+## Soul & Vision
+
+Siehe [SOUL.md](SOUL.md) für die Planer-Perspektive: modulare Architektur, erweiterbar, reduzierbar, deutsche Codebasis.
 
 ## Bauen (lokal)
 

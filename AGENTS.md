@@ -7,6 +7,8 @@
 
 **AdlerMail** — Plattformübergreifender E-Mail-Client mit Qt 6.7 und QML.
 Erste Version: IMAP/SMTP, SQLite-Backend, 3 Sprachen (DE/EN/ES).
+Langfristig: modular erweiterbar, reduzierbar, mehrsprachig ausbaufähig.
+Siehe `SOUL.md` für die Produktvision.
 
 ## Technologie
 
@@ -116,5 +118,6 @@ Reihenfolge der Pläne in `.hermes/plans/`:
 - `quelltext/bibliothek/` — die Geschäftslogik (hier passiert die Arbeit)
 - `pruefungen/` — alle Tests
 - `vorlagen/` — Templates für neue Header und Tests
+- `SOUL.md` — Produktvision, modulare Ziele, Planer-Perspektive
 - `KONVENTIONEN.md` — das vollständige Regelwerk
 - `.clang-format` — nie ändern, wird von der CI erzwungen
